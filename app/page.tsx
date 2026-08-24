@@ -1,7 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
+import Image from 'next/image';
+import { QRCodeSVG } from 'qrcode.react';
+import { siteUrl } from './site-config';
 
+const INITIAL_FORM_DATA = {
+  nombre: '',
+  telefono: '',
+  email: '',
+  predio: '',
+  etapa: 'Terreno propio con escrituras e IRM al día',
+  presupuesto: '$35,000 – $80,000 USD (Estructuras / Clínicas fase 1)',
+  detalles: '',
+};
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -9,18 +21,11 @@ export default function Home() {
   const [enviado, setEnviado] = useState(false);
   const [step, setStep] = useState(1);
 
-  const [formData, setFormData] = useState({
-    nombre: '',
-    telefono: '',
-    email: '',
-    predio: '',
-    etapa: 'Terreno propio con escrituras e IRM al día',
-    presupuesto: '$35,000 – $80,000 USD (Estructuras / Clínicas fase 1)',
-    detalles: '',
-  });
+  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleNext = () => {
@@ -35,7 +40,7 @@ export default function Home() {
     setStep((prev) => prev + 1);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setEnviando(true);
 
@@ -62,15 +67,7 @@ export default function Home() {
     setModalOpen(false);
     setEnviado(false);
     setStep(1);
-    setFormData({
-      nombre: '',
-      telefono: '',
-      email: '',
-      predio: '',
-      etapa: 'Terreno propio con escrituras e IRM al día',
-      presupuesto: '$35,000 – $80,000 USD (Estructuras / Clínicas fase 1)',
-      detalles: '',
-    });
+    setFormData(INITIAL_FORM_DATA);
   };
 
   return (
@@ -150,27 +147,32 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-              <div className="h-48 bg-slate-800 rounded-lg mb-6 flex items-center justify-center border border-slate-700/50 text-slate-500 font-medium">
-                <div className="h-56 w-full rounded-lg mb-6 overflow-hidden border border-slate-700/50 bg-slate-800">
-  <img 
-    src="/centro-medico.jpg" 
-    alt="Avance de obra centros médicos Carapungo" 
-    className="w-full h-full object-cover hover:scale-105 transition duration-300"
-  />
-</div>
+              <div className="relative h-56 w-full rounded-lg mb-6 overflow-hidden border border-slate-700/50 bg-slate-800">
+                <Image
+                  src="/centro-medico.jpg"
+                  alt="Avance de obra centros médicos Carapungo"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover hover:scale-105 transition duration-300"
+                />
+              </div>
+              <span className="text-xs font-semibold bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded">Infraestructura Médica</span>
               <h3 className="text-xl font-bold mt-3 mb-2">Edificio de Centros Médicos</h3>
               <p className="text-slate-400 text-sm leading-relaxed mb-4">
                 Diseño y edificación de consultorios cumpliendo regulaciones sanitarias de la ACESS y normas estructurales de Quito.
               </p>
             </div>
 
-            <div className="h-56 w-full rounded-lg mb-6 overflow-hidden border border-slate-700/50 bg-slate-800">
-  <img 
-    src="/farmacia.jpg" 
-    alt="Avance de obra farmacia Carapungo" 
-    className="w-full h-full object-cover hover:scale-105 transition duration-300"
-  />
-</div>
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+              <div className="relative h-56 w-full rounded-lg mb-6 overflow-hidden border border-slate-700/50 bg-slate-800">
+                <Image
+                  src="/farmacia.jpg"
+                  alt="Avance de obra farmacia Carapungo"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover hover:scale-105 transition duration-300"
+                />
+              </div>
               <span className="text-xs font-semibold bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded">Local Comercial</span>
               <h3 className="text-xl font-bold mt-3 mb-2">Módulo Comercial & Farmacia</h3>
               <p className="text-slate-400 text-sm leading-relaxed mb-4">
@@ -381,11 +383,7 @@ export default function Home() {
   {/* Sección Código QR */}
       <div className="flex flex-col items-center justify-center my-10">
         <div className="bg-white p-4 rounded-2xl shadow-xl flex flex-col items-center">
-          <img
-            src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://corporacionfenix.com"
-            alt="Código QR Fénix"
-            className="w-40 h-40 rounded-lg"
-          />
+          <QRCodeSVG value={siteUrl} size={160} className="rounded-lg" />
           <span className="text-xs text-slate-800 font-bold mt-3">
             Visita corporacionfenix.com
           </span>
