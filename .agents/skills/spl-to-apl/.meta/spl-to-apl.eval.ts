@@ -115,7 +115,7 @@ Eval("spl-translation", {
     skill: skillMetadata,
   },
 
-  task: async ({ input }: { input: string }): Promise<TaskOutput> => {
+  task: async (text: { input: string }): Promise<TaskOutput> => {
     const harnessType = flag("harnessType") as HarnessType;
 
     const result = await runHarness(input, harnessType, {
