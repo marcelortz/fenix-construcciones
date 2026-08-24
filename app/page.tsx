@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 
+
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
   const [enviando, setEnviando] = useState(false);
@@ -23,7 +24,7 @@ export default function Home() {
   };
 
   const handleNext = () => {
-    if (step === 1 && (!formData.nombre.trim() || !formData.telefono.trim() || !formData.email.trim())) {
+    if (step === 1 && (!formData.nombre.trim() || !formData.telefono.trim())) {
       alert('Por favor complete todos sus datos de contacto.');
       return;
     }
@@ -377,10 +378,23 @@ export default function Home() {
           </div>
         </div>
       )}
+  {/* Sección Código QR */}
+      <div className="flex flex-col items-center justify-center my-10">
+        <div className="bg-white p-4 rounded-2xl shadow-xl flex flex-col items-center">
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://corporacionfenix.com"
+            alt="Código QR Fénix"
+            className="w-40 h-40 rounded-lg"
+          />
+          <span className="text-xs text-slate-800 font-bold mt-3">
+            Visita corporacionfenix.com
+          </span>
+        </div>
+      </div>
 
-      {/* Footer */}
+   {/* Footer */}
       <footer className="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
-        © {new Date().getFullYear()} Fénix Construcciones. Todos los derechos reservados. Carapungo, Quito, Ecuador.
+        © {new Date().getFullYear()} Fénix Construcciones. Todos los derechos reservados.
       </footer>
     </div>
   );
