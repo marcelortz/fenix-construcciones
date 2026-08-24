@@ -51,7 +51,7 @@ Eval('{{capability}}-{{step}}', {
       metadata: { purpose: 'boundary_ambiguous' },
     },
   ],
-  task: async ({ input }) => {
+  task: async () => {
     // return await {{functionName}}([{ role: 'user', content: input }]);
     return input;
   },

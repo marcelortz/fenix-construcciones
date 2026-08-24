@@ -337,7 +337,7 @@ Automatic token capture works with Vercel AI SDK (`ai` package). For other SDKs 
 ```typescript
 import { trace } from '@opentelemetry/api';
 
-task: async ({ input }) => {
+task: async () => {
   const span = trace.getActiveSpan();
 
   // Example: Google Generative AI

@@ -50,7 +50,7 @@ Eval('{{capability}}-tool-use', {
       metadata: { purpose: 'irrelevant' },
     },
   ],
-  task: async ({ input }) => {
+  task: async () => {
     // return await {{functionName}}([{ role: 'user', content: input }]);
     return { text: '', toolCalls: [] };
   },

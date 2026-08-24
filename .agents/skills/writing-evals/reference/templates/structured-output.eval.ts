@@ -90,7 +90,7 @@ Eval('{{capability}}-{{step}}', {
       metadata: { purpose: 'ambiguous' },
     },
   ],
-  task: async ({ input }) => {
+  task: async () => {
     // return await extractInfo([{ role: 'user', content: input }]);
     return { field1: '', field2: '', isComplete: false, missingFields: [] };
   },

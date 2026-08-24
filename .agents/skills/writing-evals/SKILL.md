@@ -165,7 +165,7 @@ Eval('my-eval-name', {
   data: [
     { input: '...', expected: '...', metadata: { purpose: '...' } },
   ],
-  task: async ({ input }) => {
+  task: async () => {
     return await myFunction(input);
   },
   scorers: [MyScorer],

@@ -53,7 +53,7 @@ Eval('{{capability}}-{{step}}', {
       metadata: { purpose: 'distractor' },
     },
   ],
-  task: async ({ input }) => {
+  task: async () => {
     // const result = await {{functionName}}(input);
     // return result.documents.map(d => d.id);
     return [];

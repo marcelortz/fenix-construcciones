@@ -226,7 +226,7 @@ Eval('categorize-messages', {
   data: [
     { input: 'My app is broken', expected: 'support' },
   ],
-  task: async ({ input }) => categorizeMessage([{ role: 'user', content: input }]),
+  task: async () => categorizeMessage([{ role: 'user', content: input }]),
   scorers: [ExactMatch],
 });
 ```

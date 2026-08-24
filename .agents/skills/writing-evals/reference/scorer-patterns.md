@@ -256,7 +256,7 @@ Eval('my-eval', {
   data: [
     { input: 'What is 2+2?', expected: '4' },
   ],
-  task: async ({ input }) => generateAnswer(input),
+  task: async () => generateAnswer(input),
   scorers: [
     ExactMatch,      // Is the answer correct?
     MaxLength,       // Is it concise?

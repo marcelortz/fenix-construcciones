@@ -13,7 +13,7 @@ Eval('{{capability}}-basic', {
   data: [
     { input: 'TODO: add input', expected: 'TODO: add expected' },
   ],
-  task: async ({ input }) => {
+  task: async () => {
     // TODO: call your function here
     // return await {{functionName}}(input);
     return input;
