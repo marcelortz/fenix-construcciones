@@ -5,7 +5,7 @@ import { Scorer } from 'axiom/ai/scorers';
 // TODO: import or define your agent result type
 type AgentResult = {
   text: string;
-  toolCalls?: Array<{ toolName: string; args: Record<string, any> }>;
+  toolCalls?: Array<{ toolName: string; args: Record<string, unknown> }>;
 };
 
 const ToolUseMatch = Scorer(
