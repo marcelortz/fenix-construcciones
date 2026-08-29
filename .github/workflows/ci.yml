@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-and-build:
+    name: Test & Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ce9b86149ffd8ec6e544e # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1a34d9d7d1d43142c2 # v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        # El endpoint crea Resend dentro del handler, así que el build no
+        # requiere la API key real; usamos un placeholder por claridad.
+        env:
+          RESEND_API_KEY: re_placeholder_ci
+        run: npm run build
