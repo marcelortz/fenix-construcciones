@@ -62,6 +62,8 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -76,11 +78,7 @@ jobs:
         run: npm ci
 
       - name: Link & Deploy to Vercel (production)
-        run: |
-          npx vercel@latest link --yes \
-            --project ${{ secrets.VERCEL_PROJECT_ID }} \
-            --scope ${{ secrets.VERCEL_ORG_ID }}
-          npx vercel@latest deploy --prod --token ${{ secrets.VERCEL_TOKEN }} --yes
+        run: npx vercel@latest link --yes --project "$VERCEL_PROJECT_ID" --scope "$VERCEL_ORG_ID" && npx vercel@latest deploy --prod --token "$VERCEL_TOKEN" --yes
 
   deploy-preview:
     name: Deploy Preview to Vercel
@@ -90,6 +88,8 @@ jobs:
     if: github.event_name == 'pull_request'
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -105,12 +105,7 @@ jobs:
 
       - name: Link & Deploy Preview to Vercel
         id: preview
-        run: |
-          npx vercel@latest link --yes \
-            --project ${{ secrets.VERCEL_PROJECT_ID }} \
-            --scope ${{ secrets.VERCEL_ORG_ID }}
-          URL=$(npx vercel@latest deploy --token ${{ secrets.VERCEL_TOKEN }} --yes)
-          echo "preview-url=$URL" >> "$GITHUB_OUTPUT"
+        run: npx vercel@latest link --yes --project "$VERCEL_PROJECT_ID" --scope "$VERCEL_ORG_ID" && echo "preview-url=$(npx vercel@latest deploy --token "$VERCEL_TOKEN" --yes)" >> "$GITHUB_OUTPUT"
 
       - name: Comment preview URL on PR
         if: success()
