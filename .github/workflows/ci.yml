@@ -47,10 +47,11 @@ jobs:
         run: npm ci
 
       - name: Build
-        # El endpoint crea Resend dentro del handler, así que el build no
-        # requiere la API key real; usamos un placeholder por claridad.
+        # El endpoint crea Resend dentro del handler. En runtime usa la API
+        # key real; en el build la necesitamos para que el chequeo de tipos
+        # no falle. Usa el secret si existe, si no un placeholder de claridad.
         env:
-          RESEND_API_KEY: re_placeholder_ci
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY || 're_placeholder_ci' }}
         run: npm run build
 
   deploy-vercel:
