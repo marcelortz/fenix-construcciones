@@ -60,6 +60,8 @@ jobs:
     # Solo en push a main y si build pasó.
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -73,14 +75,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Deploy to Vercel (production)
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          # Production deployment en push a main.
-          vercel-args: '--prod'
+      - name: Link & Deploy to Vercel (production)
+        run: |
+          npx vercel@latest link --yes \
+            --project ${{ secrets.VERCEL_PROJECT_ID }} \
+            --scope ${{ secrets.VERCEL_ORG_ID }}
+          npx vercel@latest deploy --prod --token ${{ secrets.VERCEL_TOKEN }} --yes
 
   deploy-preview:
     name: Deploy Preview to Vercel
@@ -88,6 +88,8 @@ jobs:
     # Solo en PRs y si build pasó.
     needs: build
     if: github.event_name == 'pull_request'
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -101,21 +103,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Deploy Preview to Vercel
+      - name: Link & Deploy Preview to Vercel
         id: preview
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          # Sin --prod => despliegue de preview (no afecta producción).
+        run: |
+          npx vercel@latest link --yes \
+            --project ${{ secrets.VERCEL_PROJECT_ID }} \
+            --scope ${{ secrets.VERCEL_ORG_ID }}
+          URL=$(npx vercel@latest deploy --token ${{ secrets.VERCEL_TOKEN }} --yes)
+          echo "preview-url=$URL" >> "$GITHUB_OUTPUT"
 
       - name: Comment preview URL on PR
         if: success()
         uses: actions/github-script@v7
         with:
           script: |
-            const url = '${{ steps.preview.outputs.preview-url }}' || '${{ steps.preview.outputs.url }}';
+            const url = '${{ steps.preview.outputs.preview-url }}';
             if (!url) return;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
