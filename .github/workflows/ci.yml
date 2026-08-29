@@ -54,7 +54,7 @@ jobs:
         run: npm run build
 
   deploy-vercel:
-    name: Deploy to Vercel
+    name: Deploy to Vercel (production)
     runs-on: ubuntu-latest
     # Solo en push a main y si build pasó.
     needs: build
@@ -72,11 +72,53 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Deploy to Vercel
+      - name: Deploy to Vercel (production)
         uses: amondnet/vercel-action@08b2e9ecb28fffa4d4b777c8a42e49c29e58b3b1 # v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          # Production deployment solo en push a main.
+          # Production deployment en push a main.
           vercel-args: '--prod'
+
+  deploy-preview:
+    name: Deploy Preview to Vercel
+    runs-on: ubuntu-latest
+    # Solo en PRs y si build pasó.
+    needs: build
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ce9b86149ffd8ec6e544e # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1a34d9d7d1d43142c2 # v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy Preview to Vercel
+        id: preview
+        uses: amondnet/vercel-action@08b2e9ecb28fffa4d4b777c8a42e49c29e58b3b1 # v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          # Sin --prod => despliegue de preview (no afecta producción).
+
+      - name: Comment preview URL on PR
+        if: success()
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffca12bffe1154 # v7
+        with:
+          script: |
+            const url = '${{ steps.preview.outputs.preview-url }}' || '${{ steps.preview.outputs.url }}';
+            if (!url) return;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `✅ Preview desplegado: ${url}`,
+            });
