@@ -76,7 +76,7 @@ jobs:
         run: npm ci
 
       - name: Deploy to Vercel (production)
-        run: npx vercel@latest deploy --prod --token "$VERCEL_TOKEN" --yes --debug
+        run: npx vercel@latest deploy --prod --token "$VERCEL_TOKEN" --yes
 
   deploy-preview:
     name: Deploy Preview to Vercel
@@ -101,7 +101,7 @@ jobs:
 
       - name: Deploy Preview to Vercel
         id: preview
-        run: echo "preview-url=$(npx vercel@latest deploy --token "$VERCEL_TOKEN" --yes --debug)" >> "$GITHUB_OUTPUT"
+        run: echo "preview-url=$(npx vercel@latest deploy --token "$VERCEL_TOKEN" --yes)" >> "$GITHUB_OUTPUT"
 
       - name: Comment preview URL on PR
         if: success()
