@@ -86,13 +86,8 @@ jobs:
           echo "=== Vercel Projects ==="
           curl -s -H "Authorization: Bearer $VERCEL_TOKEN" https://api.vercel.com/v9/projects | jq '.projects[]? | {id: .id, name: .name, accountId: .accountId}' || true
 
-      - name: Configure Vercel project
-        run: |
-          mkdir -p .vercel
-          echo "{\"projectId\":\"$VERCEL_PROJECT_ID\",\"orgId\":\"$VERCEL_ORG_ID\"}" > .vercel/project.json
-
       - name: Deploy to Vercel (production)
-        run: npx vercel@latest deploy --prod --token "$VERCEL_TOKEN" --yes --debug
+        run: npx vercel@latest deploy --prod --token "$VERCEL_TOKEN" --yes --scope "${VERCEL_SCOPE:-marcelortzs-projects}" --debug
 
   deploy-preview:
     name: Deploy Preview to Vercel
@@ -117,14 +112,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Configure Vercel project
-        run: |
-          mkdir -p .vercel
-          echo "{\"projectId\":\"$VERCEL_PROJECT_ID\",\"orgId\":\"$VERCEL_ORG_ID\"}" > .vercel/project.json
-
       - name: Deploy Preview to Vercel
         id: preview
-        run: echo "preview-url=$(npx vercel@latest deploy --token "$VERCEL_TOKEN" --yes --debug)" >> "$GITHUB_OUTPUT"
+        run: echo "preview-url=$(npx vercel@latest deploy --token "$VERCEL_TOKEN" --yes --scope "${VERCEL_SCOPE:-marcelortzs-projects}" --debug)" >> "$GITHUB_OUTPUT"
 
       - name: Comment preview URL on PR
         if: success()
