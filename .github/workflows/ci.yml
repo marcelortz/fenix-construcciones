@@ -77,8 +77,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Link & Deploy to Vercel (production)
-        run: npx vercel@latest link --yes --project "$VERCEL_PROJECT_ID" --team "$VERCEL_ORG_ID" --token "$VERCEL_TOKEN" && npx vercel@latest deploy --prod --token "$VERCEL_TOKEN" --yes
+      - name: Configure Vercel project
+        run: |
+          mkdir -p .vercel
+          echo "{\"projectId\":\"$VERCEL_PROJECT_ID\",\"orgId\":\"$VERCEL_ORG_ID\"}" > .vercel/project.json
+
+      - name: Deploy to Vercel (production)
+        run: npx vercel@latest deploy --prod --token "$VERCEL_TOKEN" --yes
 
   deploy-preview:
     name: Deploy Preview to Vercel
@@ -103,9 +108,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Link & Deploy Preview to Vercel
+      - name: Configure Vercel project
+        run: |
+          mkdir -p .vercel
+          echo "{\"projectId\":\"$VERCEL_PROJECT_ID\",\"orgId\":\"$VERCEL_ORG_ID\"}" > .vercel/project.json
+
+      - name: Deploy Preview to Vercel
         id: preview
-        run: npx vercel@latest link --yes --project "$VERCEL_PROJECT_ID" --team "$VERCEL_ORG_ID" --token "$VERCEL_TOKEN" && echo "preview-url=$(npx vercel@latest deploy --token "$VERCEL_TOKEN" --yes)" >> "$GITHUB_OUTPUT"
+        run: echo "preview-url=$(npx vercel@latest deploy --token "$VERCEL_TOKEN" --yes)" >> "$GITHUB_OUTPUT"
 
       - name: Comment preview URL on PR
         if: success()
