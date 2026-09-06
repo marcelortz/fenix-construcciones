@@ -6,7 +6,9 @@ const { sendMock } = vi.hoisted(() => ({ sendMock: vi.fn() }));
 vi.mock('resend', () => ({
   Resend: class {
     emails = { send: sendMock };
-    constructor(_apiKey: string) {}
+    constructor(_apiKey?: string) {
+      void _apiKey;
+    }
   },
 }));
 
@@ -104,6 +106,7 @@ describe('POST /api/send', () => {
     it('acepta detalles vacíos (campo opcional)', async () => {
       sendMock.mockResolvedValue({ data: { id: 'email_123' }, error: null });
       const { detalles: _omit, ...noDetails } = VALID_PAYLOAD;
+      void _omit;
 
       const res = await POST(makeReq(noDetails));
       expect(res.status).toBe(200);
@@ -123,6 +126,7 @@ describe('POST /api/send', () => {
 
     it('rechaza campo obligatorio faltante (predio) con 400', async () => {
       const { predio: _omit, ...sinPredio } = VALID_PAYLOAD;
+      void _omit;
 
       const res = await POST(makeReq(sinPredio));
       expect(res.status).toBe(400);

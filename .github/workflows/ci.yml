@@ -62,6 +62,8 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID || 'team_ZTzg4DipCJQwVC36sd86WFIV' }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID || 'prj_EX8B8DizVCenUhAj9On2VPr5uw2Q' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -75,11 +77,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Link automatico: infiere el proyecto y el team desde el git remote
-      # (github.com/marcelortz/fenix-construcciones) y el VERCEL_TOKEN.
-      # El deploy usa el .vercel generado, sin necesidad de ORG_ID/PROJECT_ID.
       - name: Link & Deploy to Vercel (production)
-        run: npx vercel@latest link --yes && npx vercel@latest deploy --prod --token "$VERCEL_TOKEN" --yes
+        run: npx vercel@latest link --yes --project "$VERCEL_PROJECT_ID" --team "$VERCEL_ORG_ID" --token "$VERCEL_TOKEN" && npx vercel@latest deploy --prod --token "$VERCEL_TOKEN" --yes
 
   deploy-preview:
     name: Deploy Preview to Vercel
@@ -89,6 +88,8 @@ jobs:
     if: github.event_name == 'pull_request'
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID || 'team_ZTzg4DipCJQwVC36sd86WFIV' }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID || 'prj_EX8B8DizVCenUhAj9On2VPr5uw2Q' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -104,7 +105,7 @@ jobs:
 
       - name: Link & Deploy Preview to Vercel
         id: preview
-        run: npx vercel@latest link --yes && echo "preview-url=$(npx vercel@latest deploy --token "$VERCEL_TOKEN" --yes)" >> "$GITHUB_OUTPUT"
+        run: npx vercel@latest link --yes --project "$VERCEL_PROJECT_ID" --team "$VERCEL_ORG_ID" --token "$VERCEL_TOKEN" && echo "preview-url=$(npx vercel@latest deploy --token "$VERCEL_TOKEN" --yes)" >> "$GITHUB_OUTPUT"
 
       - name: Comment preview URL on PR
         if: success()
