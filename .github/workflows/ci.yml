@@ -77,6 +77,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Inspect Vercel Account & Scope
+        run: |
+          echo "=== Vercel User ==="
+          curl -s -H "Authorization: Bearer $VERCEL_TOKEN" https://api.vercel.com/v2/user | jq '{username: .user.username, email: .user.email, id: .user.id}' || true
+          echo "=== Vercel Teams ==="
+          curl -s -H "Authorization: Bearer $VERCEL_TOKEN" https://api.vercel.com/v2/teams | jq '.teams[]? | {id: .id, slug: .slug, name: .name}' || true
+          echo "=== Vercel Projects ==="
+          curl -s -H "Authorization: Bearer $VERCEL_TOKEN" https://api.vercel.com/v9/projects | jq '.projects[]? | {id: .id, name: .name, accountId: .accountId}' || true
+
       - name: Configure Vercel project
         run: |
           mkdir -p .vercel
