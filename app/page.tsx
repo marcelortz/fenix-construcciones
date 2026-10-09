@@ -93,7 +93,7 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <header className="px-6 py-20 max-w-7xl mx-auto text-center md:text-left md:flex items-center justify-between">
+      <header className="px-6 py-20 max-w-7xl mx-auto text-center md:text-left md:flex items-center justify-between gap-12">
         <div className="md:w-1/2 space-y-6">
           <div className="inline-block bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
             Sede Carapungo • Quito, Ecuador
@@ -105,9 +105,9 @@ export default function Home() {
             Especialistas en edificación de infraestructura médica, locales comerciales y obras civiles bajo la Norma Ecuatoriana de la Construcción (NEC).
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <button 
+            <button
               onClick={() => setModalOpen(true)}
-              className="bg-amber-500 hover:bg-amber-600 text-slate-950 px-6 py-3 rounded-lg font-bold text-center transition"
+              className="bg-amber-500 hover:bg-amber-600 text-slate-950 px-6 py-3 rounded-lg font-bold text-center transition shadow-lg shadow-amber-500/20"
             >
               Iniciar Validación Técnica
             </button>
@@ -117,22 +117,31 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-12 md:mt-0 md:w-5/12 bg-gradient-to-br from-slate-800 to-slate-950 p-8 rounded-2xl border border-slate-800 shadow-2xl">
-          <div className="text-xs text-amber-400 uppercase font-mono tracking-widest mb-2">Estado de Obra Actual</div>
-          <h3 className="text-xl font-bold mb-4">Centros Médicos & Farmacia</h3>
-          <p className="text-sm text-slate-400 mb-6">Proyecto integral en desarrollo en el sector de Carapungo bajo normativa sanitaria y municipal de Quito.</p>
-          <div className="space-y-3 font-mono text-xs">
-            <div className="flex justify-between border-b border-slate-800 pb-2">
-              <span className="text-slate-500">Ubicación:</span>
-              <span>Carapungo, Quito</span>
+        <div className="mt-12 md:mt-0 md:w-5/12 relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+          <div className="relative bg-gradient-to-br from-slate-800 to-slate-950 p-8 rounded-2xl border border-slate-800 shadow-2xl">
+            <div className="text-xs text-amber-400 uppercase font-mono tracking-widest mb-2 flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              Estado de Obra Actual
             </div>
-            <div className="flex justify-between border-b border-slate-800 pb-2">
-              <span className="text-slate-500">Dirección de Obra:</span>
-              <span className="text-slate-200">Administración General</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">Estado:</span>
-              <span className="text-emerald-400">En Ejecución Activa</span>
+            <h3 className="text-xl font-bold mb-4">Centros Médicos & Farmacia</h3>
+            <p className="text-sm text-slate-400 mb-6">Proyecto integral en desarrollo en el sector de Carapungo bajo normativa sanitaria y municipal de Quito.</p>
+            <div className="space-y-3 font-mono text-xs">
+              <div className="flex justify-between border-b border-slate-800 pb-2">
+                <span className="text-slate-500">Ubicación:</span>
+                <span className="text-slate-200">Carapungo, Quito</span>
+              </div>
+              <div className="flex justify-between border-b border-slate-800 pb-2">
+                <span className="text-slate-500">Dirección de Obra:</span>
+                <span className="text-slate-200 font-semibold">Administración General</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Estado:</span>
+                <span className="text-emerald-400 font-bold">En Ejecución Activa</span>
+              </div>
             </div>
           </div>
         </div>
@@ -269,14 +278,33 @@ export default function Home() {
             <button onClick={resetForm} className="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
 
             {enviado ? (
-              <div className="text-center py-8 space-y-4">
-                <div className="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl">✓</div>
-                <h3 className="text-xl font-bold text-white">Solicitud Recibida</h3>
-                <p className="text-sm text-slate-300">
-                  La información ha sido enviada al departamento de ingeniería. Tras verificar el predio en el catastro de Quito, nos comunicaremos en un plazo máximo de 24 a 48 horas laborables.
-                </p>
-                <button onClick={resetForm} className="mt-4 bg-slate-800 hover:bg-slate-700 text-white text-xs px-6 py-2.5 rounded-lg transition">
-                  Cerrar ventana
+              <div className="text-center py-12 space-y-6">
+                <div className="w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-4xl animate-bounce">✓</div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold text-white">Solicitud Recibida con Éxito</h3>
+                  <p className="text-slate-400 max-w-xs mx-auto">
+                    La información ha sido enviada al departamento de ingeniería para su validación técnica.
+                  </p>
+                </div>
+                <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700 text-left max-w-sm mx-auto">
+                  <p className="text-xs text-slate-400 uppercase font-bold tracking-widest mb-2 text-center">Próximos Pasos</p>
+                  <ul className="text-sm text-slate-300 space-y-2">
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-500">1.</span>
+                      <span>Verificación del predio en el catastro de Quito.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-500">2.</span>
+                      <span>Análisis de viabilidad legal y técnica.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-500">3.</span>
+                      <span>Contacto telefónico en un plazo de 24-48h laborables.</span>
+                    </li>
+                  </ul>
+                </div>
+                <button onClick={resetForm} className="mt-6 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-8 py-3 rounded-xl transition shadow-lg">
+                  Volver al inicio
                 </button>
               </div>
             ) : (
