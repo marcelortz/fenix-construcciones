@@ -1,4 +1,3 @@
 # Excluir herramientas y salidas generadas de las estadisticas de lenguaje
-.agents/**            linguist-vendored
 graphify-out/**       linguist-generated
 package-lock.json     linguist-generated

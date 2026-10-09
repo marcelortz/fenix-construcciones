@@ -1,5 +1,7 @@
 <!-- CI/CD: lint-test -> build -> deploy-vercel (main) | deploy-preview (PRs) -->
 
+> Las skills de agentes (Axiom, metrics-chart, find-skills) que antes vivían en `.agents/` están en el repositorio privado [`marcelortz/fenix-agent-tools`](https://github.com/marcelortz/fenix-agent-tools).
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
