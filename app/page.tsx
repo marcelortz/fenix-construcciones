@@ -179,10 +179,18 @@ export default function Home() {
                 icon: '📜'
               },
             ].map((service, i) => (
-              <div key={i} className="bg-slate-950 border border-slate-800 p-6 rounded-xl hover:border-amber-500/50 transition group">
+              <div key={i} className="bg-slate-950 border border-slate-800 p-6 rounded-xl hover:border-amber-500/50 transition group flex flex-col">
                 <div className="text-3xl mb-4">{service.icon}</div>
                 <h3 className="text-lg font-bold mb-2 group-hover:text-amber-400 transition">{service.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{service.desc}</p>
+                <p className="text-slate-400 text-sm leading-relaxed mb-6">{service.desc}</p>
+                <div className="mt-auto">
+                  <button
+                    onClick={() => setModalOpen(true)}
+                    className="w-full py-2 px-4 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-300 text-xs font-bold rounded-lg transition-colors duration-200 border border-slate-700 hover:border-amber-500"
+                  >
+                    Solicitar este servicio
+                  </button>
+                </div>
               </div>
             ))}
           </div>
