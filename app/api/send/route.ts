@@ -46,7 +46,7 @@ function clientIp(req: NextRequest): string {
 
 export async function POST(req: NextRequest) {
   const ip = clientIp(req);
-  if (rateLimited(ip)) {
+  if (await rateLimited(ip)) {
     return NextResponse.json(
       { error: 'Demasiados intentos. Intente nuevamente en un minuto.' },
       { status: 429 },
