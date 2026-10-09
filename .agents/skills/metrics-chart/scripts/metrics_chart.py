@@ -462,8 +462,12 @@ def _gnuplot_script(series: list, meta: Metadata, tz: Optional[tzinfo],
     out.append("set format x '%m-%d\\n%H:%M'" if multiday else "set format x '%H:%M'")
     out.append("set grid")
     out.append("set key outside below")
-    if title:
-        out.append(f"set title {q(title)} font 'sans,{fs + 2}'")
+    # Warnings share the title block as extra lines, so they reach image output
+    # without reserving new space (the ASCII renderer shows them the same way).
+    caption = [title] if title else []
+    caption += [f"⚠ {w}" for w in meta.warnings]
+    if caption:
+        out.append(f"set title {q(chr(10).join(caption))} font 'sans,{fs + 2}'")
     if meta.y_label():
         out.append(f"set ylabel {q(meta.y_label())}")
     out.append('set datafile missing "NaN"')

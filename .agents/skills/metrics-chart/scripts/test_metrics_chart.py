@@ -252,6 +252,14 @@ class GnuplotScriptTests(unittest.TestCase):
         self.assertIn("200 | GET", script)
         self.assertIn("set output '/tmp/x.png'", script)
 
+    def test_metadata_warnings_reach_the_image_title(self):
+        # warnings must not be ASCII-only: they go in the gnuplot title block too
+        meta, series = mc.parse(V3_DOC)
+        script = mc._gnuplot_script(series, meta, tz=None, term="pngcairo",
+                                    width_px=800, height_px=400, title="t",
+                                    output=None)
+        self.assertIn('set title "t\\n⚠ a warning"', script)
+
     def test_unicode_title_is_not_uXXXX_escaped(self):
         # em dash must reach gnuplot as real UTF-8, not a literal \u2014
         meta, series = mc.parse(V3_DOC)
