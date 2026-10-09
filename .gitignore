@@ -45,3 +45,6 @@ next-env.d.ts
 
 # salida generada por graphify
 /graphify-out/
+# agent skills / herramientas locales (movidas a ../fenix-extras)
+/.agents/
+skills-lock.json
