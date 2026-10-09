@@ -102,7 +102,9 @@ Force a specific backend with `--format`:
 | `sixel`    | gnuplot   | sixel stream to stdout (terminals with sixel support).        |
 
 If an image format is requested but `gnuplot` is missing, it prints a note and
-falls back to ASCII — it never hard-fails.
+falls back to ASCII — it never hard-fails. If `gnuplot` is present but fails
+while rendering, it prints `error: gnuplot failed (exit N): <gnuplot's message>`
+to stderr and exits with code 3.
 
 ## Using from an AI agent / harness
 

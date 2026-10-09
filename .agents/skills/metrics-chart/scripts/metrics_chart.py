@@ -715,14 +715,21 @@ def main(argv=None) -> int:
     # Image formats via gnuplot.
     w = args.width or 1000
     h = args.height or 500
-    if fmt == "sixel":
-        sys.stdout.buffer.write(
-            render_gnuplot_sixel(kept, meta, tz, w, h, args.title, args.font_size))
-        sys.stdout.buffer.flush()
-        return 0
+    try:
+        if fmt == "sixel":
+            sys.stdout.buffer.write(
+                render_gnuplot_sixel(kept, meta, tz, w, h, args.title, args.font_size))
+            sys.stdout.buffer.flush()
+            return 0
 
-    term = "svg" if fmt == "svg" else "pngcairo"
-    img = render_gnuplot_bytes(kept, meta, tz, term, w, h, args.title, args.font_size)
+        term = "svg" if fmt == "svg" else "pngcairo"
+        img = render_gnuplot_bytes(kept, meta, tz, term, w, h, args.title, args.font_size)
+    except subprocess.CalledProcessError as e:
+        # The renderers capture gnuplot's stderr; surface it instead of a traceback.
+        detail = (e.stderr or b"").decode(errors="replace").strip()
+        print(f"error: gnuplot failed (exit {e.returncode})"
+              + (f": {detail}" if detail else ""), file=sys.stderr)
+        return 3
 
     written_path = None
     if args.output:
