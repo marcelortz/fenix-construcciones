@@ -84,11 +84,20 @@ export async function POST(req: NextRequest) {
   const { nombre, telefono, email, predio, etapa, presupuesto, detalles } = payload;
 
   const apiKey = process.env.RESEND_API_KEY;
-  const to = (process.env.LEAD_TO_EMAIL ?? 'omsortiz@gmail.com').split(',').map((s) => s.trim());
+  // Sin destinatario por defecto en el código: se configura solo por entorno.
+  const to = (process.env.LEAD_TO_EMAIL ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
   const from = process.env.RESEND_FROM ?? 'Fenix Web <onboarding@resend.dev>';
 
   if (!apiKey) {
     console.error('RESEND_API_KEY no configurada');
+    return NextResponse.json({ error: 'Servicio no disponible' }, { status: 503 });
+  }
+
+  if (to.length === 0) {
+    console.error('LEAD_TO_EMAIL no configurada');
     return NextResponse.json({ error: 'Servicio no disponible' }, { status: 503 });
   }
 
