@@ -45,7 +45,7 @@ describe('POST /api/send', () => {
   beforeEach(() => {
     sendMock.mockReset();
     // API key presente por defecto para los casos felices.
-    setEnv({ RESEND_API_KEY: 're_test_key', LEAD_TO_EMAIL: undefined, RESEND_FROM: undefined });
+    setEnv({ RESEND_API_KEY: 're_test_key', LEAD_TO_EMAIL: 'leads@example.com', RESEND_FROM: undefined });
   });
 
   describe('casos correctos', () => {
@@ -60,13 +60,23 @@ describe('POST /api/send', () => {
       expect(sendMock).toHaveBeenCalledTimes(1);
     });
 
-    it('envía al destinatario por defecto cuando LEAD_TO_EMAIL no está seteado', async () => {
+    it('envía al destinatario de LEAD_TO_EMAIL', async () => {
       sendMock.mockResolvedValue({ data: { id: 'email_123' }, error: null });
 
       await POST(makeReq(VALID_PAYLOAD));
       const call = sendMock.mock.calls[0][0];
 
-      expect(call.to).toEqual(['omsortiz@gmail.com']);
+      expect(call.to).toEqual(['leads@example.com']);
+    });
+
+    it('ignora entradas vacías en LEAD_TO_EMAIL', async () => {
+      setEnv({ LEAD_TO_EMAIL: 'a@x.com, , b@y.com,' });
+      sendMock.mockResolvedValue({ data: { id: 'email_123' }, error: null });
+
+      await POST(makeReq(VALID_PAYLOAD));
+      const call = sendMock.mock.calls[0][0];
+
+      expect(call.to).toEqual(['a@x.com', 'b@y.com']);
     });
 
     it('usa LEAD_TO_EMAIL (varias direcciones separadas por coma)', async () => {
@@ -170,6 +180,18 @@ describe('POST /api/send', () => {
 
       expect(res.status).toBe(503);
       expect(sendMock).not.toHaveBeenCalled();
+    });
+
+    it('devuelve 503 si falta LEAD_TO_EMAIL', async () => {
+      for (const value of [undefined, '', ' , ']) {
+        sendMock.mockReset();
+        setEnv({ LEAD_TO_EMAIL: value });
+
+        const res = await POST(makeReq(VALID_PAYLOAD));
+
+        expect(res.status).toBe(503);
+        expect(sendMock).not.toHaveBeenCalled();
+      }
     });
 
     it('devuelve 502 si Resend responde con error', async () => {
