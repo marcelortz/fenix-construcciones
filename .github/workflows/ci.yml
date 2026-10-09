@@ -28,6 +28,12 @@ jobs:
       - name: Run tests
         run: npm test
 
+      # vitest solo cubre los *.test.ts; los tests de la skill metrics-chart
+      # son Python (solo librería estándar) y usan el python3 del runner.
+      - name: Run Python tests (metrics-chart)
+        working-directory: .agents/skills/metrics-chart/scripts
+        run: python3 -m unittest test_metrics_chart -v
+
   build:
     name: Build
     runs-on: ubuntu-latest
