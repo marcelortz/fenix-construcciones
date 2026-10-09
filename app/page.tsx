@@ -79,6 +79,7 @@ export default function Home() {
           <span className="text-xs uppercase tracking-widest text-slate-400 font-semibold">Construcciones</span>
         </div>
         <div className="hidden md:flex space-x-6 text-sm font-medium">
+          <a href="#servicios" className="hover:text-amber-400 transition">Servicios</a>
           <a href="#proyectos" className="hover:text-amber-400 transition">Proyectos</a>
           <a href="#seguridad" className="hover:text-amber-400 transition">Control Técnico</a>
           <a href="#contacto" className="hover:text-amber-400 transition">Contacto</a>
@@ -136,6 +137,57 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Servicios */}
+      <section id="servicios" className="px-6 py-16 bg-slate-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <h2 className="text-3xl font-bold tracking-tight">Nuestros Servicios</h2>
+            <p className="text-slate-400 text-sm mt-2">Soluciones integrales de ingeniería y construcción civil bajo los más estrictos estándares de calidad y normativa NEC.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                title: 'Infraestructura Médica',
+                desc: 'Diseño y construcción de consultorios, clínicas y farmacias siguiendo la normativa ACESS y municipal.',
+                icon: '🏥'
+              },
+              {
+                title: 'Locales Comerciales',
+                desc: 'Adecuación de espacios para retail y servicios, optimizando flujos de clientes y seguridad estructural.',
+                icon: '🏪'
+              },
+              {
+                title: 'Obras Civiles',
+                desc: 'Construcción de edificaciones residenciales y comerciales con alta precisión técnica y control de calidad.',
+                icon: '🏗️'
+              },
+              {
+                title: 'Remodelación Técnica',
+                desc: 'Actualización de infraestructuras existentes para cumplir con normativas vigentes y nuevas necesidades funcionales.',
+                icon: '🛠️'
+              },
+              {
+                title: 'Validación de Predios',
+                desc: 'Análisis técnico de viabilidad en catastro municipal para asegurar la legalidad y factibilidad del proyecto.',
+                icon: '📋'
+              },
+              {
+                title: 'Gestión de Permisos',
+                desc: 'Asesoría y trámite de licencias de construcción y permisos sanitarios ante las entidades reguladoras.',
+                icon: '📜'
+              },
+            ].map((service, i) => (
+              <div key={i} className="bg-slate-950 border border-slate-800 p-6 rounded-xl hover:border-amber-500/50 transition group">
+                <div className="text-3xl mb-4">{service.icon}</div>
+                <h3 className="text-lg font-bold mb-2 group-hover:text-amber-400 transition">{service.title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{service.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Proyectos */}
       <section id="proyectos" className="px-6 py-16 bg-slate-950/50 border-t border-slate-800">
