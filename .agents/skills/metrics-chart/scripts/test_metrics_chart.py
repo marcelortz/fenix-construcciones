@@ -240,6 +240,58 @@ class RenderSmokeTests(unittest.TestCase):
         self.assertIn("a warning", out)  # warning caption
 
 
+class ParseValidationTests(unittest.TestCase):
+    def _doc(self, **overrides):
+        s = {"metric": "m", "tags": {}, "start": 1750753164, "resolution": 60,
+             "data": [1.0, 2.0]}
+        s.update(overrides)
+        return {"series": [s]}
+
+    def test_null_data_raises_clear_error(self):
+        with self.assertRaisesRegex(ValueError, r"series 0 \(m\): 'data' is null"):
+            mc.parse(self._doc(data=None))
+
+    def test_null_start_raises_clear_error(self):
+        with self.assertRaisesRegex(ValueError, r"series 0 \(m\): 'start' is null"):
+            mc.parse(self._doc(start=None))
+
+    def test_null_resolution_raises_clear_error(self):
+        with self.assertRaisesRegex(ValueError, r"'resolution' is null"):
+            mc.parse(self._doc(resolution=None))
+
+    def test_non_numeric_start_raises_clear_error(self):
+        with self.assertRaisesRegex(ValueError, r"'start' is not an integer: 'abc'"):
+            mc.parse(self._doc(start="abc"))
+
+    def test_missing_start_and_resolution_use_defaults_and_warn(self):
+        doc = self._doc()
+        del doc["series"][0]["start"]
+        del doc["series"][0]["resolution"]
+        meta, series = mc.parse(doc)
+        self.assertEqual((series[0].start, series[0].resolution), (0, 1))
+        self.assertIn("series 0 (m): 'start' missing, using 0", meta.warnings)
+        self.assertIn("series 0 (m): 'resolution' missing, using 1", meta.warnings)
+
+    def test_zero_resolution_warns_and_uses_one(self):
+        meta, series = mc.parse(self._doc(resolution=0))
+        self.assertEqual(series[0].resolution, 1)
+        self.assertIn("series 0 (m): 'resolution' is 0, using 1", meta.warnings)
+
+    def test_complete_series_adds_no_warnings(self):
+        meta, _ = mc.parse(self._doc())
+        self.assertEqual(meta.warnings, [])
+
+    def test_main_returns_2_on_null_field(self):
+        import io, tempfile, contextlib
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as fh:
+            json.dump(self._doc(start=None), fh)
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            rc = mc.main([fh.name, "--format", "ascii", "--no-color"])
+        self.assertEqual(rc, 2)
+        self.assertIn("error: invalid metrics response", err.getvalue())
+
+
 class GnuplotScriptTests(unittest.TestCase):
     def test_script_sets_time_axis_missing_and_labels(self):
         meta, series = mc.parse(V3_DOC)
