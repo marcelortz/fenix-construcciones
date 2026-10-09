@@ -109,9 +109,12 @@ def _int_field(s: dict, key: str, default: int, where: str, warnings: list) -> i
     value = s[key]
     if value is None:
         raise ValueError(f"{where}: '{key}' is null; expected an integer")
+    # is_integer() is False for fractions, NaN and infinity alike.
+    if isinstance(value, float) and not value.is_integer():
+        raise ValueError(f"{where}: '{key}' must be a whole number, got {value!r}")
     try:
         return int(value)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         raise ValueError(f"{where}: '{key}' is not an integer: {value!r}") from None
 
 
@@ -146,6 +149,8 @@ def parse(doc) -> "tuple[Metadata, list]":
         data = s.get("data", [])
         if data is None:
             raise ValueError(f"{where}: 'data' is null; expected a list of values")
+        if not isinstance(data, list):
+            raise ValueError(f"{where}: 'data' must be a list, got {type(data).__name__}")
         start = _int_field(s, "start", 0, where, meta.warnings)
         resolution = _int_field(s, "resolution", 1, where, meta.warnings)
         if resolution == 0:

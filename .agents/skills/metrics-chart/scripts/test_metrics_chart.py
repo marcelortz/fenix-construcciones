@@ -266,6 +266,35 @@ class ParseValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, r"'start' is not an integer: 'abc'"):
             mc.parse(self._doc(start="abc"))
 
+    def test_data_must_be_a_list(self):
+        for bad, type_name in (("abc", "str"), ({"a": 1}, "dict"), (5, "int")):
+            with self.subTest(data=bad):
+                with self.assertRaisesRegex(ValueError,
+                                            rf"series 0 \(m\): 'data' must be a list, got {type_name}"):
+                    mc.parse(self._doc(data=bad))
+
+    def test_fractional_start_raises_instead_of_truncating(self):
+        with self.assertRaisesRegex(ValueError, r"'start' must be a whole number, got 60\.5"):
+            mc.parse(self._doc(start=60.5))
+
+    def test_fractional_resolution_raises_instead_of_truncating(self):
+        with self.assertRaisesRegex(ValueError, r"'resolution' must be a whole number, got 0\.5"):
+            mc.parse(self._doc(resolution=0.5))
+
+    def test_nan_and_infinity_are_rejected_as_non_integers(self):
+        for bad in (float("nan"), float("inf")):
+            with self.subTest(start=bad):
+                with self.assertRaisesRegex(ValueError, r"'start' must be a whole number"):
+                    mc.parse(self._doc(start=bad))
+
+    def test_decimal_string_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, r"'resolution' is not an integer: '60\.5'"):
+            mc.parse(self._doc(resolution="60.5"))
+
+    def test_integer_valued_float_is_accepted(self):
+        _, series = mc.parse(self._doc(start=1750753164.0, resolution=60.0))
+        self.assertEqual((series[0].start, series[0].resolution), (1750753164, 60))
+
     def test_missing_start_and_resolution_use_defaults_and_warn(self):
         doc = self._doc()
         del doc["series"][0]["start"]
