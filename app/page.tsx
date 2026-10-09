@@ -258,7 +258,7 @@ export default function Home() {
                       <span key={s} className="text-amber-500 text-xl">★</span>
                     ))}
                   </div>
-                  <p className="text-lg text-slate-300 italic mb-6">"{t.text}"</p>
+                  <p className="text-lg text-slate-300 italic mb-6">&quot;{t.text}&quot;</p>
                   <div>
                     <p className="font-bold text-white">{t.name}</p>
                     <p className="text-xs text-amber-500 uppercase tracking-widest">{t.role}</p>
