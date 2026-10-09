@@ -10,8 +10,10 @@ const RATE_WINDOW_MS = 60_000; // por minuto
 
 function createUpstashLimiter(): Ratelimit | null {
   // Acepta los nombres de Upstash y los que crea la integración de Vercel.
-  const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
+  // `||` y no `??`: una variable vacía (como en .env.example) no debe tapar
+  // a la otra.
+  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   if (!url || !token) return null;
 
   return new Ratelimit({

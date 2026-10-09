@@ -74,6 +74,18 @@ describe('rateLimited con Upstash', () => {
     expect(redisConfigs).toEqual([{ url: 'https://kv.upstash.io', token: 'kv' }]);
   });
 
+  it('ignora variables de Upstash vacías y usa las de Vercel', async () => {
+    // Así quedan si se copia .env.example tal cual y luego `vercel env pull`.
+    await freshLimiter({
+      UPSTASH_REDIS_REST_URL: '',
+      UPSTASH_REDIS_REST_TOKEN: '',
+      KV_REST_API_URL: 'https://kv.upstash.io',
+      KV_REST_API_TOKEN: 'kv',
+    });
+
+    expect(redisConfigs).toEqual([{ url: 'https://kv.upstash.io', token: 'kv' }]);
+  });
+
   it('bloquea cuando Upstash dice que se superó el límite', async () => {
     const { rateLimited } = await freshLimiter(ENV);
     limitMock.mockResolvedValueOnce({ success: true });
