@@ -14,8 +14,11 @@ import contextlib
 import io
 import json
 import os
+import shutil
+import subprocess
 import tempfile
 import unittest
+from unittest import mock
 
 import metrics_chart as mc
 
@@ -432,6 +435,34 @@ class GnuplotTimezoneTests(unittest.TestCase):
                                     title=None, output=None)
         self.assertIn(f"{1615701600 - 5 * 3600} 1.0", script)  # EST point
         self.assertIn(f"{1615708800 - 4 * 3600} 2.0", script)  # EDT point
+
+
+class GnuplotRenderTests(unittest.TestCase):
+    def test_main_reports_gnuplot_error_and_returns_3(self):
+        failure = subprocess.CalledProcessError(
+            1, ["gnuplot"], stderr=b"line 7: unknown or ambiguous terminal type\n")
+        for fmt in ("png", "sixel"):
+            with self.subTest(fmt=fmt), tempfile.TemporaryDirectory() as tmp:
+                path = os.path.join(tmp, "in.json")
+                with open(path, "w", encoding="utf-8") as fh:
+                    json.dump(V3_DOC, fh)
+                err = io.StringIO()
+                with mock.patch.object(mc, "gnuplot_available", return_value=True), \
+                        mock.patch.object(mc.subprocess, "run", side_effect=failure), \
+                        contextlib.redirect_stderr(err):
+                    rc = mc.main([path, "--format", fmt,
+                                  "--output", os.path.join(tmp, "out.png")])
+                self.assertEqual(rc, 3)
+                self.assertIn("error: gnuplot failed (exit 1): line 7: unknown or "
+                              "ambiguous terminal type", err.getvalue())
+
+    @unittest.skipUnless(shutil.which("gnuplot"), "gnuplot not installed")
+    def test_render_gnuplot_bytes_produces_png_and_svg(self):
+        meta, series = mc.parse(V3_DOC)
+        png = mc.render_gnuplot_bytes(series, meta, None, "pngcairo", 400, 200, "t")
+        self.assertTrue(png.startswith(b"\x89PNG"))
+        svg = mc.render_gnuplot_bytes(series, meta, None, "svg", 400, 200, "t")
+        self.assertIn(b"<svg", svg)
 
 
 class DisplayInstructionTests(unittest.TestCase):
