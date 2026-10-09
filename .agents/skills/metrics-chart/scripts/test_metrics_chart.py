@@ -10,8 +10,11 @@ application/vnd.metrics.v3+json.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import io
 import json
+import os
+import tempfile
 import unittest
 
 import metrics_chart as mc
@@ -282,12 +285,13 @@ class ParseValidationTests(unittest.TestCase):
         self.assertEqual(meta.warnings, [])
 
     def test_main_returns_2_on_null_field(self):
-        import io, tempfile, contextlib
-        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as fh:
-            json.dump(self._doc(start=None), fh)
-        err = io.StringIO()
-        with contextlib.redirect_stderr(err):
-            rc = mc.main([fh.name, "--format", "ascii", "--no-color"])
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "null_start.json")
+            with open(path, "w", encoding="utf-8") as fh:
+                json.dump(self._doc(start=None), fh)
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err):
+                rc = mc.main([path, "--format", "ascii", "--no-color"])
         self.assertEqual(rc, 2)
         self.assertIn("error: invalid metrics response", err.getvalue())
 
