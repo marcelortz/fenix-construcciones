@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react';
+
 import Image from 'next/image';
 import { QRCodeSVG } from 'qrcode.react';
 import { siteUrl } from './site-config';
@@ -15,6 +16,27 @@ const INITIAL_FORM_DATA = {
   detalles: '',
 };
 
+const TESTIMONIALS = [
+  {
+    name: 'Dr. Ricardo Mendoza',
+    role: 'Director Clínico',
+    text: 'La precisión técnica de Fénix en la adecuación de nuestros consultorios fue excepcional. Cumplieron estrictamente con la normativa ACESS, facilitando nuestra certificación.',
+    stars: 5
+  },
+  {
+    name: 'Arq. Sofia Valenzuela',
+    role: 'Desarrolladora Inmobiliaria',
+    text: 'Un equipo serio y comprometido. La gestión de permisos y la ejecución de la obra civil en Carapungo superaron nuestras expectativas en tiempos y calidad.',
+    stars: 5
+  },
+  {
+    name: 'Ing. Marco Tulio',
+    role: 'Gestor de Proyectos',
+    text: 'La validación técnica previa que realizan es un valor agregado enorme. Evitó que invirtiéramos en un predio con problemas catastrales.',
+    stars: 5
+  },
+];
+
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
   const [enviando, setEnviando] = useState(false);
@@ -22,6 +44,15 @@ export default function Home() {
   const [step, setStep] = useState(1);
 
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % TESTIMONIALS.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -201,6 +232,51 @@ export default function Home() {
                   </button>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonios */}
+      <section id="testimonios" className="px-6 py-16 bg-slate-900 border-t border-slate-800 overflow-hidden">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold tracking-tight mb-12">Confianza de Nuestros Clientes</h2>
+
+          <div className="relative h-64">
+            {TESTIMONIALS.map((t, i) => (
+              <div
+                key={i}
+                className={`absolute inset-0 transition-all duration-700 ease-in-out transform ${
+                  i === currentTestimonial
+                    ? 'opacity-100 translate-x-0 scale-100 z-10'
+                    : 'opacity-0 translate-x-full scale-95 z-0'
+                }`}
+              >
+                <div className="bg-slate-950 border border-slate-800 p-8 rounded-2xl shadow-xl">
+                  <div className="flex justify-center mb-4">
+                    {[...Array(t.stars)].map((_, s) => (
+                      <span key={s} className="text-amber-500 text-xl">★</span>
+                    ))}
+                  </div>
+                  <p className="text-lg text-slate-300 italic mb-6">"{t.text}"</p>
+                  <div>
+                    <p className="font-bold text-white">{t.name}</p>
+                    <p className="text-xs text-amber-500 uppercase tracking-widest">{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-center gap-2 mt-8">
+            {TESTIMONIALS.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentTestimonial(i)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === currentTestimonial ? 'w-8 bg-amber-500' : 'w-2 bg-slate-700'
+                }`}
+              />
             ))}
           </div>
         </div>
