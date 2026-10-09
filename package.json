@@ -10,6 +10,8 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@upstash/ratelimit": "2.2.0",
+    "@upstash/redis": "1.39.0",
     "next": "16.4.0",
     "qrcode.react": "^4.2.0",
     "react": "19.2.8",
