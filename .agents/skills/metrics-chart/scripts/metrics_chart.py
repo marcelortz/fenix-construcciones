@@ -101,6 +101,20 @@ def format_label(tags: dict, group_keys: list, multi_metric: bool, metric: str) 
     return label
 
 
+def _int_field(s: dict, key: str, default: int, where: str, warnings: list) -> int:
+    """Read an integer field. Absent -> default plus a warning; null/invalid -> error."""
+    if key not in s:
+        warnings.append(f"{where}: '{key}' missing, using {default}")
+        return default
+    value = s[key]
+    if value is None:
+        raise ValueError(f"{where}: '{key}' is null; expected an integer")
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        raise ValueError(f"{where}: '{key}' is not an integer: {value!r}") from None
+
+
 def parse(doc) -> "tuple[Metadata, list]":
     """Parse a metrics query response.
 
@@ -125,17 +139,26 @@ def parse(doc) -> "tuple[Metadata, list]":
     multi_metric = len(metrics) > 1
 
     series = []
-    for s in raw_series:
+    for i, s in enumerate(raw_series):
         metric = s.get("metric", "")
         tags = s.get("tags", {}) or {}
+        where = f"series {i} ({metric or 'unnamed'})"
+        data = s.get("data", [])
+        if data is None:
+            raise ValueError(f"{where}: 'data' is null; expected a list of values")
+        start = _int_field(s, "start", 0, where, meta.warnings)
+        resolution = _int_field(s, "resolution", 1, where, meta.warnings)
+        if resolution == 0:
+            meta.warnings.append(f"{where}: 'resolution' is 0, using 1")
+            resolution = 1
         series.append(
             Series(
                 label=format_label(tags, meta.group_keys, multi_metric, metric),
                 metric=metric,
                 tags=tags,
-                start=int(s.get("start", 0)),
-                resolution=int(s.get("resolution", 1)) or 1,
-                values=list(s.get("data", [])),
+                start=start,
+                resolution=resolution,
+                values=list(data),
             )
         )
     return meta, series
@@ -645,7 +668,11 @@ def main(argv=None) -> int:
         print(f"error: input is not valid JSON: {e}", file=sys.stderr)
         return 2
 
-    meta, series = parse(doc)
+    try:
+        meta, series = parse(doc)
+    except ValueError as e:
+        print(f"error: invalid metrics response: {e}", file=sys.stderr)
+        return 2
     series = [s for s in series if not s.is_empty()]
     if not series:
         print("error: no plottable series in input", file=sys.stderr)
