@@ -84,6 +84,11 @@ jobs:
     # Solo en PRs y si build pasó.
     needs: build
     if: github.event_name == 'pull_request'
+    # El GITHUB_TOKEN por defecto es de solo lectura; el paso que comenta la
+    # URL del preview en el PR necesita escritura en pull requests.
+    permissions:
+      contents: read
+      pull-requests: write
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
