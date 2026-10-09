@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
+import { rateLimited } from './rate-limit';
 
 const ETAPAS = [
   'Terreno propio con escrituras e IRM al día',
@@ -35,21 +36,6 @@ function escapeHtml(str: string = ''): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
-}
-
-// --- Rate limiting en memoria (por IP) ---
-// Suficiente para una sola instancia; en serverless/escalado horizontal
-// convendría un store compartido (Redis/Upstash). Ventana deslizante simple.
-const RATE_LIMIT = 5; // máximo de envíos
-const RATE_WINDOW_MS = 60_000; // por minuto
-const hits = new Map<string, number[]>();
-
-function rateLimited(ip: string): boolean {
-  const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
-  recent.push(now);
-  hits.set(ip, recent);
-  return recent.length > RATE_LIMIT;
 }
 
 function clientIp(req: NextRequest): string {
