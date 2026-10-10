@@ -238,5 +238,22 @@ describe('POST /api/send', () => {
       expect(blocked.status).toBe(429);
       expect(json.error).toMatch(/Demasiados intentos/i);
     });
+
+    it('cuenta juntas las IPv6 del mismo /64', async () => {
+      sendMock.mockResolvedValue({ data: { id: 'email_123' }, error: null });
+
+      // 5 envíos desde direcciones distintas del mismo /64...
+      for (let i = 1; i <= 5; i++) {
+        const ok = await POST(makeReq(VALID_PAYLOAD, `2001:db8:abcd:12::${i}`));
+        expect(ok.status).toBe(200);
+      }
+      // ...y el sexto, desde otra dirección del mismo /64, se bloquea.
+      const blocked = await POST(makeReq(VALID_PAYLOAD, '2001:db8:abcd:12:ffff::99'));
+      expect(blocked.status).toBe(429);
+
+      // Otro /64 no se ve afectado.
+      const other = await POST(makeReq(VALID_PAYLOAD, '2001:db8:abcd:13::1'));
+      expect(other.status).toBe(200);
+    });
   });
 });
