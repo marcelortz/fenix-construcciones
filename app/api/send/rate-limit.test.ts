@@ -172,6 +172,37 @@ describe('rateLimited en memoria (sin Upstash)', () => {
     expect(trackedIps()).toBe(1);
   });
 
+  it('guarda como mucho 6 instantes por IP aunque inunde el endpoint', async () => {
+    const { rateLimited, trackedHits } = await freshLimiter();
+
+    for (let i = 0; i < 1000; i++) {
+      expect(await rateLimited('6.6.6.6')).toBe(i >= 5);
+      vi.advanceTimersByTime(10);
+    }
+
+    expect(trackedHits('6.6.6.6')).toBe(6);
+  });
+
+  it('decide igual que sin recortar la lista', async () => {
+    const { rateLimited } = await freshLimiter();
+    // Referencia: la misma ventana deslizante, guardando todos los instantes.
+    const all: number[] = [];
+    const reference = (now: number) => {
+      const recent = all.filter((t) => now - t < 60_000);
+      all.length = 0;
+      all.push(...recent, now);
+      return all.length > 5;
+    };
+
+    // Ráfagas, insistencia mientras está bloqueada y pausas largas.
+    const gaps = [0, 0, 0, 0, 0, 0, 0, 1_000, 20_000, 20_000, 20_000, 59_999, 1, 0, 0, 0, 0, 0, 0,
+      30_000, 31_000, 5_000, 5_000, 5_000, 5_000, 5_000, 5_000, 61_000, 0, 0];
+    for (const gap of gaps) {
+      vi.advanceTimersByTime(gap);
+      expect(await rateLimited('7.7.7.7')).toBe(reference(Date.now()));
+    }
+  });
+
   it('conserva las IPs con peticiones dentro de la ventana', async () => {
     const { rateLimited, trackedIps } = await freshLimiter();
 

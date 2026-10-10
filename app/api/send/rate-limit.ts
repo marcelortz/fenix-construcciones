@@ -67,11 +67,21 @@ function memoryRateLimited(ip: string): boolean {
 
   const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
   recent.push(now);
+  const blocked = recent.length > RATE_LIMIT;
+  // Para decidir basta con las RATE_LIMIT + 1 peticiones más recientes: si
+  // alguna más antigua sigue en la ventana, las recientes también. Recortar
+  // evita que una IP que inunda el endpoint acumule miles de entradas.
+  if (recent.length > RATE_LIMIT + 1) recent.splice(0, recent.length - (RATE_LIMIT + 1));
   hits.set(ip, recent);
-  return recent.length > RATE_LIMIT;
+  return blocked;
 }
 
 // Solo para tests: número de IPs que el limitador en memoria mantiene.
 export function trackedIps(): number {
   return hits.size;
+}
+
+// Solo para tests: instantes guardados para una IP.
+export function trackedHits(ip: string): number {
+  return hits.get(ip)?.length ?? 0;
 }
