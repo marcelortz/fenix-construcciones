@@ -16,26 +16,43 @@ const INITIAL_FORM_DATA = {
   detalles: '',
 };
 
-const TESTIMONIALS = [
+type Testimonial = {
+  name: string;
+  role: string;
+  text: string;
+  stars: number;
+  // true mientras sea un texto de relleno pendiente de reemplazar.
+  placeholder?: boolean;
+};
+
+// PENDIENTE: reemplazar por testimonios REALES de clientes, con su
+// autorización por escrito, y quitar `placeholder: true`. Mientras quede
+// alguno marcado, la sección de testimonios no se muestra en la web.
+const TESTIMONIALS: Testimonial[] = [
   {
-    name: 'Dr. Ricardo Mendoza',
-    role: 'Director Clínico',
-    text: 'La precisión técnica de Fénix en la adecuación de nuestros consultorios fue excepcional. Cumplieron estrictamente con la normativa ACESS, facilitando nuestra certificación.',
-    stars: 5
+    name: '[Nombre del cliente 1]',
+    role: '[Cargo o empresa]',
+    text: '[Testimonio real del cliente 1, con su autorización]',
+    stars: 5,
+    placeholder: true,
   },
   {
-    name: 'Arq. Sofia Valenzuela',
-    role: 'Desarrolladora Inmobiliaria',
-    text: 'Un equipo serio y comprometido. La gestión de permisos y la ejecución de la obra civil en Carapungo superaron nuestras expectativas en tiempos y calidad.',
-    stars: 5
+    name: '[Nombre del cliente 2]',
+    role: '[Cargo o empresa]',
+    text: '[Testimonio real del cliente 2, con su autorización]',
+    stars: 5,
+    placeholder: true,
   },
   {
-    name: 'Ing. Marco Tulio',
-    role: 'Gestor de Proyectos',
-    text: 'La validación técnica previa que realizan es un valor agregado enorme. Evitó que invirtiéramos en un predio con problemas catastrales.',
-    stars: 5
+    name: '[Nombre del cliente 3]',
+    role: '[Cargo o empresa]',
+    text: '[Testimonio real del cliente 3, con su autorización]',
+    stars: 5,
+    placeholder: true,
   },
 ];
+
+const SHOW_TESTIMONIALS = TESTIMONIALS.length > 0 && TESTIMONIALS.every((t) => !t.placeholder);
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -47,6 +64,7 @@ export default function Home() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   useEffect(() => {
+    if (!SHOW_TESTIMONIALS) return;
     const timer = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % TESTIMONIALS.length);
     }, 5000);
@@ -237,7 +255,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonios */}
+      {/* Testimonios: oculta mientras haya placeholders (ver TESTIMONIALS) */}
+      {SHOW_TESTIMONIALS && (
       <section id="testimonios" className="px-6 py-16 bg-slate-900 border-t border-slate-800 overflow-hidden">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold tracking-tight mb-12">Confianza de Nuestros Clientes</h2>
@@ -281,6 +300,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Proyectos */}
       <section id="proyectos" className="px-6 py-16 bg-slate-950/50 border-t border-slate-800">
