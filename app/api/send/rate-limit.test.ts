@@ -97,26 +97,26 @@ describe('rateLimited con Upstash', () => {
   });
 
   it('usa el límite en memoria si Upstash no responde a tiempo', async () => {
-    const { rateLimited, trackedIps } = await freshLimiter(ENV);
+    const { rateLimited, trackedKeys } = await freshLimiter(ENV);
     // Así responde la librería cuando vence su timeout: deja pasar sin contar.
     limitMock.mockResolvedValue({ success: true, reason: 'timeout' });
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     for (let i = 0; i < 5; i++) expect(await rateLimited('1.1.1.1')).toBe(false);
     expect(await rateLimited('1.1.1.1')).toBe(true);
-    expect(trackedIps()).toBe(1);
+    expect(trackedKeys()).toBe(1);
 
     errorSpy.mockRestore();
   });
 
   it('usa el límite en memoria si Upstash falla', async () => {
-    const { rateLimited, trackedIps } = await freshLimiter(ENV);
+    const { rateLimited, trackedKeys } = await freshLimiter(ENV);
     limitMock.mockRejectedValue(new Error('network down'));
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     for (let i = 0; i < 5; i++) expect(await rateLimited('1.1.1.1')).toBe(false);
     expect(await rateLimited('1.1.1.1')).toBe(true);
-    expect(trackedIps()).toBe(1);
+    expect(trackedKeys()).toBe(1);
     expect(errorSpy).toHaveBeenCalled();
 
     errorSpy.mockRestore();
@@ -158,21 +158,21 @@ describe('rateLimited en memoria (sin Upstash)', () => {
     expect(await rateLimited('1.1.1.1')).toBe(false);
   });
 
-  it('elimina del mapa las IPs inactivas', async () => {
-    const { rateLimited, trackedIps } = await freshLimiter();
+  it('elimina del mapa los clientes inactivos', async () => {
+    const { rateLimited, trackedKeys } = await freshLimiter();
 
     for (let i = 0; i < 100; i++) await rateLimited(`10.0.0.${i}`);
-    expect(trackedIps()).toBe(100);
+    expect(trackedKeys()).toBe(100);
 
     // Pasada la ventana, la siguiente petición dispara la limpieza:
     // solo queda la IP que acaba de llegar.
     vi.advanceTimersByTime(60_000);
     await rateLimited('9.9.9.9');
 
-    expect(trackedIps()).toBe(1);
+    expect(trackedKeys()).toBe(1);
   });
 
-  it('guarda como mucho 6 instantes por IP aunque inunde el endpoint', async () => {
+  it('guarda como mucho 6 instantes por cliente aunque inunde el endpoint', async () => {
     const { rateLimited, trackedHits } = await freshLimiter();
 
     for (let i = 0; i < 1000; i++) {
@@ -203,8 +203,8 @@ describe('rateLimited en memoria (sin Upstash)', () => {
     }
   });
 
-  it('conserva las IPs con peticiones dentro de la ventana', async () => {
-    const { rateLimited, trackedIps } = await freshLimiter();
+  it('conserva los clientes con peticiones dentro de la ventana', async () => {
+    const { rateLimited, trackedKeys } = await freshLimiter();
 
     await rateLimited('1.1.1.1'); // t = 0 s, dispara la primera limpieza
     vi.advanceTimersByTime(30_000);
@@ -212,7 +212,7 @@ describe('rateLimited en memoria (sin Upstash)', () => {
     vi.advanceTimersByTime(30_000);
     await rateLimited('3.3.3.3'); // t = 60 s: limpieza; 1.1.1.1 caduca, 2.2.2.2 no
 
-    expect(trackedIps()).toBe(2);
+    expect(trackedKeys()).toBe(2);
     // 2.2.2.2 conserva su historial: 5 envíos más lo bloquean.
     for (let i = 0; i < 4; i++) expect(await rateLimited('2.2.2.2')).toBe(false);
     expect(await rateLimited('2.2.2.2')).toBe(true);
