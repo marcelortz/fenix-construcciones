@@ -13,6 +13,7 @@ vi.mock('resend', () => ({
 }));
 
 import { POST } from './route';
+import { ETAPAS, PRESUPUESTOS } from '../../lead-form';
 
 const VALID_PAYLOAD = {
   nombre: 'Dr. Andrés Morales',
@@ -111,6 +112,17 @@ describe('POST /api/send', () => {
       expect(html).toContain('&lt;script&gt;');
       // El asunto también debe estar escapado.
       expect(call.subject).toContain('&lt;script&gt;');
+    });
+
+    it('acepta todas las opciones de etapa y presupuesto que muestra la página', async () => {
+      sendMock.mockResolvedValue({ data: { id: 'email_123' }, error: null });
+
+      for (const etapa of ETAPAS) {
+        for (const presupuesto of PRESUPUESTOS) {
+          const res = await POST(makeReq({ ...VALID_PAYLOAD, etapa, presupuesto }));
+          expect(res.status).toBe(200);
+        }
+      }
     });
 
     it('acepta detalles vacíos (campo opcional)', async () => {

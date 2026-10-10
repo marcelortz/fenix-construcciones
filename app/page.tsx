@@ -5,14 +5,18 @@ import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react';
 import Image from 'next/image';
 import { QRCodeSVG } from 'qrcode.react';
 import { siteUrl } from './site-config';
+import { ETAPAS, PRESUPUESTOS, isValidEmail, submitErrorMessage } from './lead-form';
 
-const INITIAL_FORM_DATA = {
+const INITIAL_FORM_DATA: Record<
+  'nombre' | 'telefono' | 'email' | 'predio' | 'etapa' | 'presupuesto' | 'detalles',
+  string
+> = {
   nombre: '',
   telefono: '',
   email: '',
   predio: '',
-  etapa: 'Terreno propio con escrituras e IRM al día',
-  presupuesto: '$35,000 – $80,000 USD (Estructuras / Clínicas fase 1)',
+  etapa: ETAPAS[0],
+  presupuesto: PRESUPUESTOS[1],
   detalles: '',
 };
 
@@ -78,8 +82,12 @@ export default function Home() {
   };
 
   const handleNext = () => {
-    if (step === 1 && (!formData.nombre.trim() || !formData.telefono.trim())) {
+    if (step === 1 && (!formData.nombre.trim() || !formData.telefono.trim() || !formData.email.trim())) {
       alert('Por favor complete todos sus datos de contacto.');
+      return;
+    }
+    if (step === 1 && !isValidEmail(formData.email)) {
+      alert('Por favor ingrese un correo electrónico válido (ej. nombre@empresa.com).');
       return;
     }
     if (step === 2 && !formData.predio.trim()) {
@@ -103,7 +111,7 @@ export default function Home() {
       if (res.ok) {
         setEnviado(true);
       } else {
-        alert('Hubo un inconveniente al enviar la solicitud. Inténtelo nuevamente.');
+        alert(submitErrorMessage(res.status));
       }
     } catch {
       alert('Error de conexión al enviar el formulario.');
@@ -487,10 +495,9 @@ export default function Home() {
                         onChange={handleChange}
                         className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500"
                       >
-                        <option>Terreno propio con escrituras e IRM al día</option>
-                        <option>Local comercial con contrato de arriendo vigente</option>
-                        <option>Proyecto con planos estructurales listos para aprobación</option>
-                        <option>Requiere diseño arquitectónico y trámites desde cero</option>
+                        {ETAPAS.map((etapa) => (
+                          <option key={etapa}>{etapa}</option>
+                        ))}
                       </select>
                     </div>
                     <div className="flex gap-2 pt-2">
@@ -524,10 +531,9 @@ export default function Home() {
                         onChange={handleChange}
                         className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500"
                       >
-                        <option>$15,000 – $35,000 USD (Adecuaciones comerciales / Remodelación)</option>
-                        <option>$35,000 – $80,000 USD (Estructuras / Clínicas fase 1)</option>
-                        <option>Más de $80,000 USD (Edificación completa / Fondos disponibles)</option>
-                        <option>Recopilando costos referenciales (sin presupuesto definido)</option>
+                        {PRESUPUESTOS.map((presupuesto) => (
+                          <option key={presupuesto}>{presupuesto}</option>
+                        ))}
                       </select>
                     </div>
                     <div>
