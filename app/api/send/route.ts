@@ -2,20 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
 import { rateLimited } from './rate-limit';
-
-const ETAPAS = [
-  'Terreno propio con escrituras e IRM al día',
-  'Local comercial con contrato de arriendo vigente',
-  'Proyecto con planos estructurales listos para aprobación',
-  'Requiere diseño arquitectónico y trámites desde cero',
-] as const;
-
-const PRESUPUESTOS = [
-  '$15,000 – $35,000 USD (Adecuaciones comerciales / Remodelación)',
-  '$35,000 – $80,000 USD (Estructuras / Clínicas fase 1)',
-  'Más de $80,000 USD (Edificación completa / Fondos disponibles)',
-  'Recopilando costos referenciales (sin presupuesto definido)',
-] as const;
+import { ETAPAS, PRESUPUESTOS } from '../../lead-form';
 
 // Validación estricta del payload (defensa en profundidad: el front ya valida,
 // pero el endpoint no debe confiar en el cliente).
