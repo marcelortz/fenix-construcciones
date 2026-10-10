@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
 import { rateLimited } from './rate-limit';
+import { clientIp, rateLimitKey } from './client-ip';
 import { ETAPAS, PRESUPUESTOS } from '../../lead-form';
 
 // Validación estricta del payload (defensa en profundidad: el front ya valida,
@@ -25,15 +26,9 @@ function escapeHtml(str: string = ''): string {
     .replace(/'/g, '&#039;');
 }
 
-function clientIp(req: NextRequest): string {
-  const fwd = req.headers.get('x-forwarded-for');
-  if (fwd) return fwd.split(',')[0].trim();
-  return req.headers.get('x-real-ip') ?? 'desconocido';
-}
-
 export async function POST(req: NextRequest) {
-  const ip = clientIp(req);
-  if (await rateLimited(ip)) {
+  const ip = clientIp(req.headers);
+  if (await rateLimited(rateLimitKey(ip))) {
     return NextResponse.json(
       { error: 'Demasiados intentos. Intente nuevamente en un minuto.' },
       { status: 429 },
