@@ -62,6 +62,12 @@ export function LeadModalProvider({ children }: { children: ReactNode }) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    // Enter en un paso intermedio: el navegador envía el formulario (el paso 2
+    // tiene un solo campo de texto). Se trata como "Siguiente", no como envío.
+    if (step < 3) {
+      handleNext();
+      return;
+    }
     setEnviando(true);
 
     try {
