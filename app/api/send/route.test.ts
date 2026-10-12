@@ -110,8 +110,28 @@ describe('POST /api/send', () => {
 
       expect(html).not.toContain('<script>alert(1)</script>');
       expect(html).toContain('&lt;script&gt;');
-      // El asunto también debe estar escapado.
-      expect(call.subject).toContain('&lt;script&gt;');
+    });
+
+    it('pone el nombre en el asunto como texto plano, sin entidades HTML', async () => {
+      sendMock.mockResolvedValue({ data: { id: 'email_123' }, error: null });
+      const nombre = 'Constructora Pérez & Hijos "Fénix" O\'Neil';
+
+      await POST(makeReq({ ...VALID_PAYLOAD, nombre }));
+      const call = sendMock.mock.calls[0][0];
+
+      // El asunto no es HTML: el cliente de correo mostraría "&amp;" tal cual.
+      expect(call.subject).toBe(`Nueva Solicitud Calificada: ${nombre}`);
+      // En el cuerpo, que sí es HTML, se escapa.
+      expect(call.html).toContain('Constructora Pérez &amp; Hijos &quot;Fénix&quot; O&#039;Neil');
+    });
+
+    it('deja el asunto en una sola línea aunque el nombre traiga saltos o tabuladores', async () => {
+      sendMock.mockResolvedValue({ data: { id: 'email_123' }, error: null });
+
+      await POST(makeReq({ ...VALID_PAYLOAD, nombre: 'Ana\r\nBcc: otro@example.com\t\u0000 Pérez' }));
+      const call = sendMock.mock.calls[0][0];
+
+      expect(call.subject).toBe('Nueva Solicitud Calificada: Ana Bcc: otro@example.com Pérez');
     });
 
     it('acepta todas las opciones de etapa y presupuesto que muestra la página', async () => {
