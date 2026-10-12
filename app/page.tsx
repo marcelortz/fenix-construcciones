@@ -5,6 +5,11 @@ import { SHOW_TESTIMONIALS, TESTIMONIALS } from './testimonials';
 import { LeadModalProvider, OpenLeadModalButton } from './_components/lead-modal';
 import TestimonialsCarousel from './_components/testimonials-carousel';
 
+// Fondo del Hero. Provisional: foto de la obra de centros médicos. Para usar
+// otra, súbela a public/ (p. ej. public/hero.jpg) y cambia esta ruta a
+// '/hero.jpg': Next.js sirve public/ desde la raíz del sitio.
+const HERO_IMAGE = '/centro-medico.jpg';
+
 // Componente de servidor: el contenido estático (hero, servicios, proyectos,
 // contacto, QR) se renderiza en el servidor y no envía JavaScript al
 // navegador. Solo son de cliente el formulario (LeadModalProvider), los
@@ -32,8 +37,24 @@ export default function Home() {
         </OpenLeadModalButton>
       </nav>
 
-      {/* Hero */}
-      <header className="px-6 py-20 max-w-7xl mx-auto text-center md:text-left md:flex items-center justify-between gap-12">
+      {/* Hero: imagen de fondo a todo lo ancho con capa oscura para que el
+          texto se lea bien. El header va después y con `relative`, así se
+          pinta encima sin necesidad de z-index. */}
+      <div className="relative overflow-hidden">
+        <Image
+          src={HERO_IMAGE}
+          alt=""
+          fill
+          sizes="100vw"
+          loading="eager"
+          fetchPriority="high"
+          className="object-cover w-full h-full"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-slate-950/80 md:bg-gradient-to-r md:from-slate-950/90 md:via-slate-950/65 md:to-slate-950/30"
+        />
+      <header className="relative px-6 py-20 max-w-7xl mx-auto text-center md:text-left md:flex items-center justify-between gap-12">
         <div className="md:w-1/2 space-y-6">
           <div className="inline-block bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
             Sede Carapungo • Quito, Ecuador
@@ -85,6 +106,7 @@ export default function Home() {
           </div>
         </div>
       </header>
+      </div>
 
       {/* Servicios */}
       <section id="servicios" className="px-6 py-16 bg-slate-900">
