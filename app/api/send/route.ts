@@ -26,6 +26,13 @@ function escapeHtml(str: string = ''): string {
     .replace(/'/g, '&#039;');
 }
 
+// El asunto es texto plano, no HTML: escaparlo haría que "Pérez & Hijos" llegara
+// como "Pérez &amp; Hijos". Solo se deja en una línea (sin saltos ni caracteres de
+// control), que es lo que un asunto necesita.
+function subjectText(str: string): string {
+  return str.replace(/[\s\p{Cc}]+/gu, ' ').trim();
+}
+
 export async function POST(req: NextRequest) {
   const ip = clientIp(req.headers);
   if (await rateLimited(rateLimitKey(ip))) {
@@ -74,7 +81,7 @@ export async function POST(req: NextRequest) {
     const data = await resend.emails.send({
       from,
       to,
-      subject: `Nueva Solicitud Calificada: ${escapeHtml(nombre)}`,
+      subject: `Nueva Solicitud Calificada: ${subjectText(nombre)}`,
       replyTo: email,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
