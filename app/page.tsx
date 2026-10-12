@@ -5,10 +5,8 @@ import { SHOW_TESTIMONIALS, TESTIMONIALS } from './testimonials';
 import { LeadModalProvider, OpenLeadModalButton } from './_components/lead-modal';
 import TestimonialsCarousel from './_components/testimonials-carousel';
 
-// Fondo del Hero. Provisional: foto de la obra de centros médicos. Para usar
-// otra, súbela a public/ (p. ej. public/hero.jpg) y cambia esta ruta a
-// '/hero.jpg': Next.js sirve public/ desde la raíz del sitio.
-const HERO_IMAGE = '/centro-medico.jpg';
+// Fondo del Hero (public/hero.jpg; Next.js sirve public/ desde la raíz).
+const HERO_IMAGE = '/hero.jpg';
 
 // Componente de servidor: el contenido estático (hero, servicios, proyectos,
 // contacto, QR) se renderiza en el servidor y no envía JavaScript al
@@ -48,11 +46,11 @@ export default function Home() {
           sizes="100vw"
           loading="eager"
           fetchPriority="high"
-          className="object-cover w-full h-full"
+          className="object-cover object-bottom w-full h-full"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-slate-950/80 md:bg-gradient-to-r md:from-slate-950/90 md:via-slate-950/65 md:to-slate-950/30"
+          className="absolute inset-0 bg-slate-950/90 md:bg-gradient-to-r md:from-slate-950/90 md:via-slate-950/65 md:to-slate-950/30"
         />
       <header className="relative px-6 py-20 max-w-7xl mx-auto text-center md:text-left md:flex items-center justify-between gap-12">
         <div className="md:w-1/2 space-y-6">
