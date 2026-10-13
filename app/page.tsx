@@ -14,7 +14,7 @@ const HERO_IMAGE = '/fachada.jpg';
 // Dirección de la sede y enlace a Google Maps. La URL `dir/?api=1&destination=`
 // es la oficial de Google: en el móvil abre la app de Maps con la ruta desde la
 // ubicación del visitante y en el ordenador abre maps.google.com.
-const DIRECCION = 'Francisco Robles lote 2, pasaje N116, Calderón (Carapungo), Quito, Ecuador';
+const DIRECCION = 'Calle Francisco Robles y Flavio Alfaro, Carapungo, Quito, Ecuador';
 const MAPS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(DIRECCION)}&travelmode=driving`;
 
 // Componente de servidor: el contenido estático (hero, servicios, proyectos,
@@ -260,7 +260,7 @@ export default function Home() {
           >
             <Image
               src="/como-llegar.jpg"
-              alt="Mapa esquemático de la ruta desde el CC El Portal hasta la farmacia, en Francisco Robles lote 2, pasaje N116, Calderón (Carapungo), Quito"
+              alt="Mapa esquemático de la ruta desde el CC El Portal hasta la farmacia, en Carapungo (Calderón), Quito"
               width={1080}
               height={612}
               sizes="(max-width: 768px) 100vw, 60vw"
@@ -271,7 +271,7 @@ export default function Home() {
           <div className="md:w-2/5 text-center md:text-left">
             <h2 className="text-3xl font-bold tracking-tight">Cómo llegar</h2>
             <p className="text-slate-400 text-sm mt-3">
-              Sede Carapungo: Francisco Robles lote 2, pasaje N116, Calderón (Carapungo), Quito.
+              Sede Carapungo: calle Francisco Robles y Flavio Alfaro, Carapungo, Quito.
             </p>
             <a
               href={MAPS_URL}
