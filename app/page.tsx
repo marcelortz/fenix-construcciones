@@ -5,7 +5,7 @@ import { SHOW_TESTIMONIALS, TESTIMONIALS } from './testimonials';
 import { LeadModalProvider, OpenLeadModalButton } from './_components/lead-modal';
 import TestimonialsCarousel from './_components/testimonials-carousel';
 
-// Fondo del Hero (public/hero.jpg; Next.js sirve public/ desde la raíz).
+// Render de la fachada (public/hero.jpg; Next.js sirve public/ desde la raíz).
 const HERO_IMAGE = '/hero.jpg';
 
 // Componente de servidor: el contenido estático (hero, servicios, proyectos,
@@ -35,34 +35,27 @@ export default function Home() {
         </OpenLeadModalButton>
       </nav>
 
-      {/* Hero: imagen de fondo a todo lo ancho con capa oscura para que el
-          texto se lea bien. El header va después y con `relative`, así se
-          pinta encima sin necesidad de z-index. */}
-      <div className="relative overflow-hidden">
-        {/* El render tiene una errata («FISTOTERPIA») en el letrero del
-            segundo piso, entre el 26 % y el 31 % de su altura. La caja de la
-            imagen sobresale un 50 % por arriba (-top-1/2) y el Hero la recorta:
-            como mucho se ve el 2/3 inferior de la foto (de 33 % hacia abajo),
-            en cualquier proporción de pantalla. Solo con object-position no
-            basta: en móvil el Hero es más alto que ancho y la foto, cuadrada,
-            se vería entera de alto. */}
-        <div className="absolute inset-x-0 bottom-0 -top-1/2">
+      {/* Fachada: primera imagen de la página. Se muestra entera, nítida y sin
+          capa encima: es el render del proyecto y la base de la propuesta
+          comercial. La caja es cuadrada como la foto y como mucho ocupa el
+          85 % del alto de la pantalla. */}
+      <section aria-label="Fachada del proyecto" className="bg-slate-950">
+        <div className="relative mx-auto aspect-square w-full max-w-[min(100%,85vh)]">
           <Image
             src={HERO_IMAGE}
-            alt=""
+            alt="Render de la fachada del edificio en Carapungo: farmacia en planta baja, clínica dental, fisioterapia y oficinas en los pisos superiores."
             fill
-            // La caja mide 1,5 veces el alto del Hero, así que en pantallas
-            // estrechas la foto se ve más ancha que el viewport.
-            sizes="(max-width: 767px) 400vw, (max-width: 1023px) 160vw, 100vw"
+            sizes="(max-width: 1024px) 100vw, 85vh"
+            quality={90}
             loading="eager"
             fetchPriority="high"
-            className="object-cover object-bottom"
+            className="object-contain"
           />
         </div>
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-slate-950/80 md:bg-gradient-to-r md:from-slate-950/80 md:via-slate-950/50 md:to-slate-950/15"
-        />
+      </section>
+
+      {/* Hero: titular y llamadas a la acción sobre fondo sólido. */}
+      <div className="relative">
       <header className="relative px-6 py-20 max-w-7xl mx-auto text-center md:text-left md:flex items-center justify-between gap-12">
         <div className="md:w-1/2 space-y-6">
           <div className="inline-block bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
