@@ -20,6 +20,12 @@ const HERO_IMAGE = '/fachada.jpg';
 const DESTINO_MAPS = '-0.0897956,-78.4538852';
 const MAPS_URL = `https://www.google.com/maps/dir/?api=1&destination=${DESTINO_MAPS}&travelmode=driving`;
 
+// WhatsApp del negocio: 099 914 8247 en formato internacional (Ecuador, +593, sin
+// el 0 inicial) y con un mensaje de saludo ya escrito para el visitante.
+const WHATSAPP_URL = `https://wa.me/593999148247?text=${encodeURIComponent(
+  'Hola, quisiera información sobre un proyecto con Fénix Construcciones.',
+)}`;
+
 // Componente de servidor: el contenido estático (hero, servicios, proyectos,
 // contacto, QR) se renderiza en el servidor y no envía JavaScript al
 // navegador. Solo son de cliente el formulario (LeadModalProvider), los
@@ -372,6 +378,21 @@ export default function Home() {
             >
               Completar Ficha de Validación
             </OpenLeadModalButton>
+          </div>
+          <div className="pt-2">
+            <p className="text-slate-500 text-xs mb-3">¿Prefieres escribirnos directamente?</p>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 min-h-11 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" className="w-5 h-5 fill-current">
+                <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-1.4-.7-2.400-1.300-3.300-2.900-.2-.3.2-.3.700-1.100.1-.2 0-.3 0-.5l-.8-1.800c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.300-.7.700-1 1.600-.9 2.500.3 1.400 1 2.700 2 3.700 1.400 1.400 3.100 2.300 5 2.500.9.1 1.800-.2 2.400-.8.500-.5.700-1.100.6-1.700-.100-.2-.2-.3-.4-.4Z" />
+              </svg>
+              Escribir por WhatsApp
+              <span className="sr-only"> (se abre en una pestaña nueva)</span>
+            </a>
           </div>
         </div>
       </section>
