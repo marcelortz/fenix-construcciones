@@ -5,8 +5,11 @@ import { SHOW_TESTIMONIALS, TESTIMONIALS } from './testimonials';
 import { LeadModalProvider, OpenLeadModalButton } from './_components/lead-modal';
 import TestimonialsCarousel from './_components/testimonials-carousel';
 
-// Render de la fachada (public/hero.jpg; Next.js sirve public/ desde la raíz).
-const HERO_IMAGE = '/hero.jpg';
+// Render de la fachada (public/fachada.jpg; Next.js sirve public/ desde la raíz).
+// Si se reemplaza la imagen, conviene cambiarle también el nombre: el optimizador
+// de imágenes (y la CDN) guardan las versiones ya generadas por URL y seguirían
+// sirviendo la anterior hasta que caduque su caché (4 h por defecto).
+const HERO_IMAGE = '/fachada.jpg';
 
 // Componente de servidor: el contenido estático (hero, servicios, proyectos,
 // contacto, QR) se renderiza en el servidor y no envía JavaScript al
@@ -17,10 +20,10 @@ export default function Home() {
     <div className="min-h-screen bg-slate-900 text-slate-100 font-sans">
       <LeadModalProvider>
       {/* Navegación */}
-      <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-40 px-6 py-4 flex justify-between items-center max-w-7xl mx-auto">
-        <div className="flex items-center space-x-2">
+      <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-40 px-4 sm:px-6 py-4 flex justify-between items-center gap-3 max-w-7xl mx-auto">
+        <div className="flex items-center space-x-1.5 sm:space-x-2">
           <span className="text-2xl font-bold text-amber-500 tracking-wider">FÉNIX</span>
-          <span className="text-xs uppercase tracking-widest text-slate-400 font-semibold">Construcciones</span>
+          <span className="text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest text-slate-400 font-semibold">Construcciones</span>
         </div>
         <div className="hidden md:flex space-x-6 text-sm font-medium">
           <a href="#servicios" className="hover:text-amber-400 transition">Servicios</a>
@@ -29,7 +32,7 @@ export default function Home() {
           <a href="#contacto" className="hover:text-amber-400 transition">Contacto</a>
         </div>
         <OpenLeadModalButton
-          className="bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2 rounded-lg font-semibold text-sm transition"
+          className="shrink-0 min-h-11 bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 sm:px-4 py-2 rounded-lg font-semibold text-xs sm:text-sm leading-tight transition"
         >
           Solicitar Cotización
         </OpenLeadModalButton>
@@ -38,14 +41,15 @@ export default function Home() {
       {/* Fachada: primera imagen de la página. Se muestra entera, nítida y sin
           capa encima: es el render del proyecto y la base de la propuesta
           comercial. La caja es cuadrada como la foto y como mucho ocupa el
-          85 % del alto de la pantalla. */}
-      <section aria-label="Fachada del proyecto" className="bg-slate-950">
-        <div className="relative mx-auto aspect-square w-full max-w-[min(100%,85vh)]">
+          85 % del alto de la pantalla. En móvil ocupa el 75 % del ancho, para
+          que el botón principal del Hero quede a la vista sin desplazarse. */}
+      <section aria-label="Fachada del proyecto" className="bg-slate-950 py-3 md:py-0">
+        <div className="relative mx-auto aspect-square w-3/4 md:w-full md:max-w-[min(100%,85vh)]">
           <Image
             src={HERO_IMAGE}
             alt="Render de la fachada del edificio en Carapungo: farmacia en planta baja, clínica dental, fisioterapia y oficinas en los pisos superiores."
             fill
-            sizes="(max-width: 1024px) 100vw, 85vh"
+            sizes="(max-width: 767px) 75vw, (max-width: 1024px) 100vw, 85vh"
             quality={90}
             loading="eager"
             fetchPriority="high"
@@ -56,18 +60,18 @@ export default function Home() {
 
       {/* Hero: titular y llamadas a la acción sobre fondo sólido. */}
       <div className="relative">
-      <header className="relative px-6 py-20 max-w-7xl mx-auto text-center md:text-left md:flex items-center justify-between gap-12">
-        <div className="md:w-1/2 space-y-6">
+      <header className="relative px-6 pt-8 pb-16 md:py-20 max-w-7xl mx-auto text-center md:text-left md:flex items-center justify-between gap-12">
+        <div className="md:w-1/2 space-y-5 md:space-y-6">
           <div className="inline-block bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
             Sede Carapungo • Quito, Ecuador
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
             Construcción de alta precisión en <span className="text-amber-500">Carapungo</span>.
           </h1>
-          <p className="text-slate-400 text-lg">
+          <p className="text-slate-400 text-base md:text-lg">
             Especialistas en edificación de infraestructura médica, locales comerciales y obras civiles bajo la Norma Ecuatoriana de la Construcción (NEC).
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row gap-4 pt-2 md:pt-4">
             <OpenLeadModalButton
               className="bg-amber-500 hover:bg-amber-600 text-slate-950 px-6 py-3 rounded-lg font-bold text-center transition shadow-lg shadow-amber-500/20"
             >
@@ -157,7 +161,7 @@ export default function Home() {
                 <p className="text-slate-400 text-sm leading-relaxed mb-6">{service.desc}</p>
                 <div className="mt-auto">
                   <OpenLeadModalButton
-                    className="w-full py-2 px-4 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-300 text-xs font-bold rounded-lg transition-colors duration-200 border border-slate-700 hover:border-amber-500"
+                    className="w-full min-h-11 py-3 px-4 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-300 text-sm font-bold rounded-lg transition-colors duration-200 border border-slate-700 hover:border-amber-500"
                   >
                     Solicitar este servicio
                   </OpenLeadModalButton>
@@ -183,8 +187,8 @@ export default function Home() {
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
               <div className="relative h-56 w-full rounded-lg mb-6 overflow-hidden border border-slate-700/50 bg-slate-800">
                 <Image
-                  src="/centro-medico.jpg"
-                  alt="Avance de obra centros médicos Carapungo"
+                  src="/obras-consultorios.jpg"
+                  alt="Render de los pisos de fisioterapia y clínica dental del edificio de Centros Médicos en Carapungo"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover hover:scale-105 transition duration-300"
@@ -200,8 +204,8 @@ export default function Home() {
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
               <div className="relative h-56 w-full rounded-lg mb-6 overflow-hidden border border-slate-700/50 bg-slate-800">
                 <Image
-                  src="/farmacia.jpg"
-                  alt="Avance de obra farmacia Carapungo"
+                  src="/obras-farmacia.jpg"
+                  alt="Render de la planta baja con la farmacia del edificio en Carapungo"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover hover:scale-105 transition duration-300"
