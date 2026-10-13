@@ -204,8 +204,8 @@ export default function Home() {
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
               <div className="relative h-56 w-full rounded-lg mb-6 overflow-hidden border border-slate-700/50 bg-slate-800">
                 <Image
-                  src="/obras-farmacia.jpg"
-                  alt="Render de la planta baja con la farmacia del edificio en Carapungo"
+                  src="/obras-farmacia-interior.jpg"
+                  alt="Render del interior de la farmacia: cruz verde luminosa, mostrador y estanterías de productos"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover hover:scale-105 transition duration-300"
@@ -215,6 +215,27 @@ export default function Home() {
               <h3 className="text-xl font-bold mt-3 mb-2">Módulo Comercial & Farmacia</h3>
               <p className="text-slate-400 text-sm leading-relaxed mb-4">
                 Espacio comercial adaptado para almacenamiento farmacéutico, flujo continuo de clientes y seguridad reforzada.
+              </p>
+            </div>
+          </div>
+
+          {/* Modelo 3D del edificio: la imagen es vertical y de fondo blanco, así que
+              va en un bloque propio con object-contain en lugar de recortarse. */}
+          <div className="mt-8 bg-slate-900 border border-slate-800 rounded-xl p-6 md:flex md:items-center md:gap-8">
+            <div className="relative h-80 w-full md:w-1/3 md:shrink-0 rounded-lg mb-6 md:mb-0 overflow-hidden border border-slate-700/50 bg-white">
+              <Image
+                src="/modelo-3d.jpg"
+                alt="Modelo 3D del edificio Corporación Fénix: farmacia en planta baja, clínica dental, fisioterapia y terraza con pérgola"
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-contain p-2"
+              />
+            </div>
+            <div>
+              <span className="text-xs font-semibold bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded">Modelo 3D</span>
+              <h3 className="text-xl font-bold mt-3 mb-2">Edificio Corporación Fénix</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Modelo 3D del edificio (8,4 m × 15 m): farmacia en planta baja, clínica dental, fisioterapia y terraza con pérgola en la cubierta.
               </p>
             </div>
           </div>
