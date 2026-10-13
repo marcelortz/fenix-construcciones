@@ -26,6 +26,20 @@ const WHATSAPP_URL = `https://wa.me/593999148247?text=${encodeURIComponent(
   'Hola, quisiera información sobre un proyecto con Fénix Construcciones.',
 )}`;
 
+// Etiqueta para las imágenes que son renders o modelos 3D, no fotos de obra.
+// Pequeña y sin tapar la parte principal de la imagen; por defecto va abajo a la
+// derecha y `posicion` la cambia donde estorbe (en la fachada, arriba a la
+// izquierda, sobre el cielo, y solo en escritorio: en móvil la imagen es más
+// pequeña, la etiqueta rozaría el rótulo y va como línea de texto debajo). El contenedor de la imagen debe ser
+// `relative`.
+function RenderTag({ posicion = 'bottom-2 right-2' }: { posicion?: string }) {
+  return (
+    <span className={`pointer-events-none absolute ${posicion} rounded bg-slate-950/75 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-200 backdrop-blur-sm`}>
+      Render ilustrativo
+    </span>
+  );
+}
+
 // Componente de servidor: el contenido estático (hero, servicios, proyectos,
 // contacto, QR) se renderiza en el servidor y no envía JavaScript al
 // navegador. Solo son de cliente el formulario (LeadModalProvider), los
@@ -60,9 +74,9 @@ export default function Home() {
           que el botón principal del Hero quede a la vista sin desplazarse; por eso, en
           móvil, los botones van justo después del titular y el párrafo va debajo. En
           móviles de menos de 600 px de alto (iPhone SE de 1.ª generación) el cuadro
-          se reduce al 38 % del alto para que el botón entre entero. */}
-      <section aria-label="Fachada del proyecto" className="bg-slate-950 py-3 md:py-0">
-        <div className="relative mx-auto aspect-square w-3/4 [@media(max-height:600px)_and_(max-width:767px)]:max-w-[38svh] md:w-full md:max-w-[min(100%,85vh)]">
+          se reduce al 36 % del alto para que el botón entre entero. */}
+      <section aria-label="Fachada del proyecto" className="bg-slate-950 pt-3 pb-0.5 md:py-0">
+        <div className="relative mx-auto aspect-square w-3/4 [@media(max-height:600px)_and_(max-width:767px)]:max-w-[36svh] md:w-full md:max-w-[min(100%,85vh)]">
           <Image
             src={HERO_IMAGE}
             alt="Render de la fachada del edificio en Carapungo: farmacia en planta baja, clínica dental, fisioterapia y oficinas en los pisos superiores."
@@ -73,7 +87,9 @@ export default function Home() {
             fetchPriority="high"
             className="object-contain"
           />
+          <RenderTag posicion="top-2 left-2 hidden md:block" />
         </div>
+        <p className="md:hidden mt-1.5 text-center text-[11px] leading-none text-slate-400">Render ilustrativo</p>
       </section>
 
       {/* Hero: titular y llamadas a la acción sobre fondo sólido. */}
@@ -211,6 +227,7 @@ export default function Home() {
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover hover:scale-105 transition duration-300"
                 />
+                <RenderTag />
               </div>
               <span className="text-xs font-semibold bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded">Infraestructura Médica</span>
               <h3 className="text-xl font-bold mt-3 mb-2">Edificio de Centros Médicos</h3>
@@ -228,6 +245,7 @@ export default function Home() {
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover hover:scale-105 transition duration-300"
                 />
+                <RenderTag />
               </div>
               <span className="text-xs font-semibold bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded">Local Comercial</span>
               <h3 className="text-xl font-bold mt-3 mb-2">Módulo Comercial & Farmacia</h3>
@@ -248,6 +266,7 @@ export default function Home() {
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-contain p-2"
               />
+              <RenderTag />
             </div>
             <div>
               <span className="text-xs font-semibold bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded">Modelo 3D</span>
