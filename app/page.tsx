@@ -61,7 +61,7 @@ export default function Home() {
         </div>
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-slate-950/90 md:bg-gradient-to-r md:from-slate-950/90 md:via-slate-950/65 md:to-slate-950/30"
+          className="absolute inset-0 bg-slate-950/80 md:bg-gradient-to-r md:from-slate-950/80 md:via-slate-950/50 md:to-slate-950/15"
         />
       <header className="relative px-6 py-20 max-w-7xl mx-auto text-center md:text-left md:flex items-center justify-between gap-12">
         <div className="md:w-1/2 space-y-6">
