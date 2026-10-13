@@ -11,6 +11,12 @@ import TestimonialsCarousel from './_components/testimonials-carousel';
 // sirviendo la anterior hasta que caduque su caché (4 h por defecto).
 const HERO_IMAGE = '/fachada.jpg';
 
+// Dirección de la sede y enlace a Google Maps. La URL `dir/?api=1&destination=`
+// es la oficial de Google: en el móvil abre la app de Maps con la ruta desde la
+// ubicación del visitante y en el ordenador abre maps.google.com.
+const DIRECCION = 'Francisco Robles lote 2, pasaje N116, Calderón (Carapungo), Quito, Ecuador';
+const MAPS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(DIRECCION)}&travelmode=driving`;
+
 // Componente de servidor: el contenido estático (hero, servicios, proyectos,
 // contacto, QR) se renderiza en el servidor y no envía JavaScript al
 // navegador. Solo son de cliente el formulario (LeadModalProvider), los
@@ -238,6 +244,46 @@ export default function Home() {
                 Modelo 3D del edificio (8,4 m × 15 m): farmacia en planta baja, clínica dental, fisioterapia y terraza con pérgola en la cubierta.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Cómo llegar: la miniatura y el botón abren la ruta en Google Maps */}
+      <section id="ubicacion" className="px-6 py-16 bg-slate-950/50 border-t border-slate-800">
+        <div className="max-w-5xl mx-auto md:flex md:items-center md:gap-10">
+          <a
+            href={MAPS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Ver la ruta en Google Maps (se abre en una pestaña nueva)"
+            className="group block md:w-3/5 rounded-xl overflow-hidden border border-slate-700 hover:border-amber-500/60 transition mb-8 md:mb-0"
+          >
+            <Image
+              src="/como-llegar.jpg"
+              alt="Mapa esquemático de la ruta desde el CC El Portal hasta la farmacia, en Francisco Robles lote 2, pasaje N116, Calderón (Carapungo), Quito"
+              width={1080}
+              height={612}
+              sizes="(max-width: 768px) 100vw, 60vw"
+              quality={90}
+              className="w-full h-auto group-hover:scale-[1.02] transition duration-300"
+            />
+          </a>
+          <div className="md:w-2/5 text-center md:text-left">
+            <h2 className="text-3xl font-bold tracking-tight">Cómo llegar</h2>
+            <p className="text-slate-400 text-sm mt-3">
+              Sede Carapungo: Francisco Robles lote 2, pasaje N116, Calderón (Carapungo), Quito.
+            </p>
+            <a
+              href={MAPS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center min-h-11 mt-6 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-6 py-3 rounded-lg shadow-lg shadow-amber-500/20 transition"
+            >
+              Abrir ruta en Google Maps
+            </a>
+            <p className="text-slate-500 text-xs mt-3">
+              Ruta esquemática. Te recomendamos verificarla en Google Maps o Waze.
+            </p>
           </div>
         </div>
       </section>
