@@ -39,15 +39,26 @@ export default function Home() {
           texto se lea bien. El header va después y con `relative`, así se
           pinta encima sin necesidad de z-index. */}
       <div className="relative overflow-hidden">
-        <Image
-          src={HERO_IMAGE}
-          alt=""
-          fill
-          sizes="100vw"
-          loading="eager"
-          fetchPriority="high"
-          className="object-cover object-bottom w-full h-full"
-        />
+        {/* El render tiene una errata («FISTOTERPIA») en el letrero del
+            segundo piso, entre el 26 % y el 31 % de su altura. La caja de la
+            imagen sobresale un 50 % por arriba (-top-1/2) y el Hero la recorta:
+            como mucho se ve el 2/3 inferior de la foto (de 33 % hacia abajo),
+            en cualquier proporción de pantalla. Solo con object-position no
+            basta: en móvil el Hero es más alto que ancho y la foto, cuadrada,
+            se vería entera de alto. */}
+        <div className="absolute inset-x-0 bottom-0 -top-1/2">
+          <Image
+            src={HERO_IMAGE}
+            alt=""
+            fill
+            // La caja mide 1,5 veces el alto del Hero, así que en pantallas
+            // estrechas la foto se ve más ancha que el viewport.
+            sizes="(max-width: 767px) 400vw, (max-width: 1023px) 160vw, 100vw"
+            loading="eager"
+            fetchPriority="high"
+            className="object-cover object-bottom"
+          />
+        </div>
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-slate-950/90 md:bg-gradient-to-r md:from-slate-950/90 md:via-slate-950/65 md:to-slate-950/30"
