@@ -38,7 +38,7 @@ export default function Home() {
       <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-40 px-4 sm:px-6 py-4 flex justify-between items-center gap-3 max-w-7xl mx-auto">
         <div className="flex items-center space-x-1.5 sm:space-x-2">
           <span className="text-2xl font-bold text-amber-500 tracking-wider">FÉNIX</span>
-          <span className="text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest text-slate-400 font-semibold">Construcciones</span>
+          <span className="hidden min-[360px]:inline text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest text-slate-400 font-semibold">Construcciones</span>
         </div>
         <div className="hidden md:flex space-x-6 text-sm font-medium">
           <a href="#servicios" className="hover:text-amber-400 transition">Servicios</a>
@@ -57,9 +57,12 @@ export default function Home() {
           capa encima: es el render del proyecto y la base de la propuesta
           comercial. La caja es cuadrada como la foto y como mucho ocupa el
           85 % del alto de la pantalla. En móvil ocupa el 75 % del ancho, para
-          que el botón principal del Hero quede a la vista sin desplazarse. */}
+          que el botón principal del Hero quede a la vista sin desplazarse; por eso, en
+          móvil, los botones van justo después del titular y el párrafo va debajo. En
+          móviles de menos de 600 px de alto (iPhone SE de 1.ª generación) el cuadro
+          se reduce al 38 % del alto para que el botón entre entero. */}
       <section aria-label="Fachada del proyecto" className="bg-slate-950 py-3 md:py-0">
-        <div className="relative mx-auto aspect-square w-3/4 md:w-full md:max-w-[min(100%,85vh)]">
+        <div className="relative mx-auto aspect-square w-3/4 [@media(max-height:600px)_and_(max-width:767px)]:max-w-[38svh] md:w-full md:max-w-[min(100%,85vh)]">
           <Image
             src={HERO_IMAGE}
             alt="Render de la fachada del edificio en Carapungo: farmacia en planta baja, clínica dental, fisioterapia y oficinas en los pisos superiores."
@@ -75,20 +78,20 @@ export default function Home() {
 
       {/* Hero: titular y llamadas a la acción sobre fondo sólido. */}
       <div className="relative">
-      <header className="relative px-6 pt-8 pb-16 md:py-20 max-w-7xl mx-auto text-center md:text-left md:flex items-center justify-between gap-12">
-        <div className="md:w-1/2 space-y-5 md:space-y-6">
+      <header className="relative px-6 pt-4 pb-16 md:py-20 max-w-7xl mx-auto text-center md:text-left md:flex items-center justify-between gap-12">
+        <div className="md:w-1/2 flex flex-col gap-4 md:block md:space-y-6">
           <div className="inline-block bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
             Sede Carapungo • Quito, Ecuador
           </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
             Construcción de alta precisión en <span className="text-amber-500">Carapungo</span>.
           </h1>
-          <p className="text-slate-400 text-base md:text-lg">
+          <p className="order-last md:order-none text-slate-400 text-base md:text-lg">
             Especialistas en edificación de infraestructura médica, locales comerciales y obras civiles bajo la Norma Ecuatoriana de la Construcción (NEC).
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-2 md:pt-4">
             <OpenLeadModalButton
-              className="bg-amber-500 hover:bg-amber-600 text-slate-950 px-6 py-3 rounded-lg font-bold text-center transition shadow-lg shadow-amber-500/20"
+              className="min-h-11 bg-amber-500 hover:bg-amber-600 text-slate-950 px-6 py-3 rounded-lg font-bold text-center transition shadow-lg shadow-amber-500/20"
             >
               Iniciar Validación Técnica
             </OpenLeadModalButton>
