@@ -13,9 +13,12 @@ const HERO_IMAGE = '/fachada.jpg';
 
 // Dirección de la sede y enlace a Google Maps. La URL `dir/?api=1&destination=`
 // es la oficial de Google: en el móvil abre la app de Maps con la ruta desde la
-// ubicación del visitante y en el ordenador abre maps.google.com.
-const DIRECCION = 'Calle Francisco Robles y Flavio Alfaro, Carapungo, Quito, Ecuador';
-const MAPS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(DIRECCION)}&travelmode=driving`;
+// ubicación del visitante y en el ordenador abre maps.google.com. El destino va
+// por coordenadas (punto exacto indicado por el negocio) para que Maps no tenga
+// que interpretar la dirección en texto (calle Francisco Robles y Flavio Alfaro,
+// Carapungo, Quito).
+const DESTINO_MAPS = '-0.0897956,-78.4538852';
+const MAPS_URL = `https://www.google.com/maps/dir/?api=1&destination=${DESTINO_MAPS}&travelmode=driving`;
 
 // Componente de servidor: el contenido estático (hero, servicios, proyectos,
 // contacto, QR) se renderiza en el servidor y no envía JavaScript al
