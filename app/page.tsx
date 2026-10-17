@@ -272,7 +272,7 @@ export default function Home() {
               <span className="text-xs font-semibold bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded">Modelo 3D</span>
               <h3 className="text-xl font-bold mt-3 mb-2">Edificio Corporación Fénix</h3>
               <p className="text-slate-400 text-sm leading-relaxed">
-                Modelo 3D del edificio (8,4 m × 15 m): farmacia en planta baja, clínica dental, fisioterapia y terraza con pérgola en la cubierta.
+                Modelo 3D del edificio (5,4 m × 9 m): farmacia en planta baja, clínica dental, fisioterapia y terraza con pérgola en la cubierta.
               </p>
             </div>
           </div>
